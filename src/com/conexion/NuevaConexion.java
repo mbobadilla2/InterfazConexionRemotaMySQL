@@ -17,7 +17,7 @@ import javax.swing.JTextField;
  */
 public class NuevaConexion extends JFrame {
 //faltan modificadores de acceso y encapsulacion
-    private JPanel p = new JPanel();
+    private final JPanel p = new JPanel();
     JLabel nomConx = new JLabel("Nombre de la conexion");
     JLabel usuario = new JLabel("Usuario");
     JLabel contrasenia = new JLabel("contrasenia");
@@ -33,7 +33,6 @@ public class NuevaConexion extends JFrame {
     JButton bPrueba =new JButton("Probar Conexion");
     
     public NuevaConexion() {
-
         this.setTitle("Nueva Conexion");
         this.setSize(610, 200);
         this.setLocationRelativeTo(null);
@@ -42,7 +41,6 @@ public class NuevaConexion extends JFrame {
         this.add(p);
         this.addComponentes();
         this.setVisible(true);
-
     }
 
     private void addComponentes() {
@@ -62,11 +60,14 @@ public class NuevaConexion extends JFrame {
        pSur.add(bCancelar);
        pSur.add(bPrueba);
        pSur.add(bAceptar);
+       
        this.add(p,"Center");
        this.add(pSur,"South");
-        
-
-
-
+    }
+    
+    public void addEventos(OyenteConexion o){
+         bAceptar.addActionListener(o);
+         bCancelar.addActionListener(o);
+         bPrueba.addActionListener(o);
     }
 }

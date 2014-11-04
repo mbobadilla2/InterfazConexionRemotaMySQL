@@ -1,12 +1,14 @@
 
 package com.conexion;
 
+import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import static javax.swing.WindowConstants.HIDE_ON_CLOSE;
 
@@ -23,7 +25,7 @@ public class Consultas extends JFrame {
     
     public Consultas(MiOyente oyente){
         this.oyente = oyente;
-        this.setSize(886,605);
+        this.setSize(640, 480);
          this.setLocationRelativeTo(null);
         //this.setResizable(false);
         this.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -50,13 +52,15 @@ public class Consultas extends JFrame {
         JPanel pNorte=new JPanel(); 
         JPanel pSur = new JPanel();
         JPanel pEste= new JPanel();
-        JTextArea lConsulta= new JTextArea(100, 100);    
+        JTextArea lConsulta= new JTextArea(); 
+        JScrollPane despConsulta = new JScrollPane(lConsulta);
         pSur.add(Run);
-        
+        this.add(pEste, BorderLayout.WEST);
         this.setJMenuBar(menu);
         this.add(pNorte,"North");
-        this.add(lConsulta,"Center");
+        this.add(despConsulta,"Center");
         this.add(pSur, "South");
+        
         
         addEventos();
        }
@@ -65,3 +69,4 @@ public class Consultas extends JFrame {
         nuevo.addActionListener(oyente);
     }
 }
+
