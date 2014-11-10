@@ -6,56 +6,81 @@
 package com.conexion;
 
 import java.awt.BorderLayout;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Ventana que mostrara el resultado de una consulta
  *
- * @author JR
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez García
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
+ * @version 6/Noviembre/2014 /A
+ *
  */
-public class TablaConsulta extends JFrame{
-    
-    public TablaConsulta(Statement sentencia, String consulta) throws SQLException{
-        super("Tabla resultante");
+public class TablaConsulta extends JFrame { //tablaConsulta es una ventana 
+
+    /**
+     * Constructor que inicializa la venta , realiza la consulta y la muestra en
+     * una ventana
+     *
+     * @param consulta la consulta en un string
+     * @param sentencia clase requerida para ajecutar la sentencia
+     * @see Statement
+     * @see ConexionSQL
+     *
+     */
+    public TablaConsulta(Statement sentencia, String consulta) {
+        super("Consulta");
         setSize(640, 480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setLayout(new BorderLayout());
-        ResultSet resultados = sentencia.executeQuery(consulta);
-        JTable tabla = new JTable();
-        DefaultTableModel modelo = new DefaultTableModel();
-        JScrollPane desplazar = new JScrollPane(tabla);
-        String [] columnas = new String[resultados.getMetaData().getColumnCount()];
-        for(int i = 0; i<resultados.getMetaData().getColumnCount(); i++){
-            columnas[i] = resultados.getMetaData().getColumnName(i);
-        }
-        
-        modelo.setColumnIdentifiers(columnas);
-        desplazar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        desplazar.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        tabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        tabla.setFillsViewportHeight(true);
-        tabla.setModel(modelo);
-        getContentPane().add(desplazar, BorderLayout.NORTH);
-        pack();
-        
-        String fila [] = new String[resultados.getMetaData().getColumnCount()];
-        
-        while(resultados.next()){
+
+        ResultSet resultados;
+        try { // SI todo sale bien muestra la consulta si no atrapa la excepcion y la muestra en la ventana 
+            resultados = sentencia.executeQuery(consulta); //ejecuta la consulta
+
+            JTable tabla = new JTable();
+            DefaultTableModel modelo = new DefaultTableModel();
+            JScrollPane desplazar = new JScrollPane(tabla);
+            String[] columnas = new String[resultados.getMetaData().getColumnCount()];
+
             for (int i = 0; i < resultados.getMetaData().getColumnCount(); i++) {
-                fila[i] = resultados.getString(i);
+                columnas[i] = resultados.getMetaData().getColumnName(i + 1);
             }
-            modelo.addRow(fila);
+
+            modelo.setColumnIdentifiers(columnas);
+            desplazar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            desplazar.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            tabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+            tabla.setFillsViewportHeight(true);
+            tabla.setModel(modelo);
+            getContentPane().add(desplazar, BorderLayout.NORTH);
+            pack();
+
+            String fila[] = new String[resultados.getMetaData().getColumnCount()];
+
+            while (resultados.next()) {
+                for (int i = 0; i < resultados.getMetaData().getColumnCount(); i++) {
+                    fila[i] = resultados.getString(i + 1);
+                }
+                modelo.addRow(fila);
+            }
+
+            setVisible(true);
+
+        } catch (SQLException ex) {
+            JLabel lError =new JLabel("Error "+ex);
+            this.add(lError);
+            this.setVisible(true);
         }
-                
-        
-       setVisible(true); 
+
     }
-    
-    
+
 }

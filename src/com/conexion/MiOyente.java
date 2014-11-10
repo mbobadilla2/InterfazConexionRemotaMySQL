@@ -14,6 +14,7 @@ import java.util.*;
  * @author Jose Ruben,Miguel Fernando,Jose Ramon,Luis Angel
  */
 public class MiOyente extends MouseAdapter implements ActionListener {
+
     private MiPanel panel;
     private MenuEmergente menuEm;
     private PanelConexion conxActual;
@@ -22,7 +23,7 @@ public class MiOyente extends MouseAdapter implements ActionListener {
     private boolean loginActivo = false;//comprueba que no hay otra ventana de login
     private NuevaConexion nc;
     private Login login;
-    
+
     // Todos los botones;
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -59,24 +60,27 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         // El click derecho del ratón es el #3;
 
         conxActual = (PanelConexion) me.getSource();
-        Login log = null;
+
        // System.out.println("Hola mama, soy el panel #" + conxActual.getName());
-        
         loginActivo = login.isVisible();
-        
+
         if (me.getButton() == 1 && !loginActivo) {
 //            log = new Login(conxActual.getDatosConx().get(3).getText());
-            login.getlUsuario().setText(conxActual.getDatosConx().get(3).getText());
-        
+            login.getlUsuario().setText(conxActual.getInfoConexion().get(3).getText());
+
             login.setVisible(true);
-            
+            oc.setL(login);
+            oc.setP(conxActual);
+            login.addEventos(oc);
+
             loginActivo = true;
+
             // Si se oprimió click derecho en un panel, se muestra el menú emergente...
         } else if (me.getButton() == 3) {
             //System.out.println("Botón derecho!");
             mostrarMenuEmergente(me);
         } else if (loginActivo = true) {
-           
+
             //Hacer que la ventana parpadee
         }
     }
@@ -94,7 +98,7 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         panel.eliminarConexion();
         /*Mando el array "conexciones" al metodo que reecribirá el 
          archivo donde se encuentran todas las conexciones registradas*/
-        Archivo.escribirCadenas(conexiones, "src/cbd/conx.txt");
+        Archivo.escribirConexiones(conexiones, "src/cbd/conx.txt");
 
     }
 
