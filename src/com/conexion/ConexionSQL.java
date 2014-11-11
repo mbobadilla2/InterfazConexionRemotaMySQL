@@ -2,8 +2,10 @@ package com.conexion;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -19,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class ConexionSQL {
         //variables de clase 
-    private String bd;
+    private String bd="biblioteca";
     private String user;
     private String port;
     private String host;
@@ -27,6 +29,7 @@ public class ConexionSQL {
     private String url;
     private Connection conexion = null;
     private Statement stament;
+    private ArrayList <String> nombresBD=new ArrayList();
 
     /**
      * Constructor que inicializa el string que se pasara para hacer la conexion
@@ -42,7 +45,7 @@ public class ConexionSQL {
         this.port = port;
         this.host = host;
         this.password = password;
-        this.url = "jdbc:mysql://" + host + ":" + port;
+        this.url = "jdbc:mysql://" + host + ":" + port+"/"+bd ;
     }
         
     /**
@@ -57,6 +60,7 @@ public class ConexionSQL {
             return conexion != null;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
             System.out.println(e);
+            cerrarConexion();
         }
         return false;
 
@@ -75,12 +79,29 @@ public class ConexionSQL {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             conexion = DriverManager.getConnection(url, user, password);
             stament=conexion.createStatement();
+            guardarNombresBD();
         } catch (ClassNotFoundException ex) {
             System.out.println("Error"+ex);
         } catch (InstantiationException | IllegalAccessException |SQLException ex) {
             System.out.println("Error"+ex);
         }
    }
+     private void guardarNombresBD() {
+        try {
+            ResultSet rs =stament.executeQuery("show databases");
+           
+             while(rs.next()){
+                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                     nombresBD.add(rs.getString(i));
+                 }
+             }
+            System.out.println(nombresBD);
+        } catch (SQLException ex) {
+            System.out.println("Error fja"+ ex);
+        }
+        
+    }
+   
     //GETTERS Y SETTERS ------------------------------------------------------------------------------------------------
 
     public Statement getStament() {
@@ -90,5 +111,11 @@ public class ConexionSQL {
     public void setStament(Statement stament) {
         this.stament = stament;
     }
+
+    public ArrayList<String> getNombresBD() {
+        return nombresBD;
+    }
+
+  
 
 }

@@ -2,6 +2,8 @@ package com.conexion;
 
 import java.awt.BorderLayout;
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  * Esta es la ventana donde se haran las consultas
@@ -25,10 +27,14 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private JMenuItem guardarComo;
     private JMenuItem salir;
     private JTextArea taConsulta;
-    
+    private JTree arbol = null;
+
     /**
-     * Incializa la ventana agregando sus componentes , ademas llama al metodo addeventos,y a addComponentes
-     * @param oyente oyente que le dara eventos al los elementos de esta ventana que los necesiten 
+     * Incializa la ventana agregando sus componentes , ademas llama al metodo
+     * addeventos,y a addComponentes
+     *
+     * @param oyente oyente que le dara eventos al los elementos de esta ventana
+     * que los necesiten
      */
     public Consulta(OyenteConexion oyente) {
         this.setTitle("Conexion");  //HAY QUE MOSTRAR AQUI EL NOMBRE DE LA CONEXION 
@@ -39,8 +45,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         addComponentes();
         this.setVisible(true);
     }
+
     /**
      * Agrega los componentes a esta ventana
+     *
      * @param void
      */
     private void addComponentes() {
@@ -60,15 +68,18 @@ public class Consulta extends JFrame { //clase consulta es una ventana
 
         menu.add(archivo);
 
+        arbol = crearArbol();
+        JScrollPane ar = new JScrollPane(arbol);
+
         JPanel pNorte = new JPanel();
         JPanel pSur = new JPanel();
         JPanel pEste = new JPanel();
-  
-        pEste.add(new JLabel("Aqui va el arbol Uu"));
+
+        pEste.add(ar);
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
         pSur.add(run);
-        
+
         this.add(pEste, BorderLayout.WEST);
         this.setJMenuBar(menu);
         this.add(pNorte, "North");
@@ -79,17 +90,38 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         addEventos();
     }
 
-    
-        /**
-         * agrega los eventos a los elementos de esta ventana que los necesiten 
-         * @param void
-         */
-      public void addEventos() {
+    /**
+     * agrega los eventos a los elementos de esta ventana que los necesiten
+     *
+     * @param void
+     */
+    public void addEventos() {
         nuevo.addActionListener(oyente);
         run.addActionListener(oyente);
     }
-      
-   //GETTERS AND SETTERS ----------------------------------------------------------------------------------------------------
+
+    private JTree crearArbol() {
+        JTree arbol;
+        DefaultMutableTreeNode conexion = new DefaultMutableTreeNode("Bases de datos");
+        DefaultTreeModel modelo = new DefaultTreeModel(conexion);
+        arbol = new JTree(modelo);
+        int cuenta = 0;
+
+        for (String a : oyente.getCon().getNombresBD()) {
+            DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(a);
+            modelo.insertNodeInto(nombreBD, conexion, cuenta);
+            try {
+                int cuentaTabla = 0;
+
+            } catch (Exception e) {
+                System.out.println("Error " + e);
+            }
+
+        }
+        return arbol;
+    }
+
+    //GETTERS AND SETTERS ----------------------------------------------------------------------------------------------------
     public JTextArea getTaConsulta() {
         return taConsulta;
     }
@@ -98,5 +130,4 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         this.taConsulta = taConsulta;
     }
 
-  
 }

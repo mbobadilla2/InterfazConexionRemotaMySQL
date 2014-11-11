@@ -5,6 +5,7 @@
 package com.conexion;
 
 import java.awt.GridLayout;
+import static javax.security.auth.callback.ConfirmationCallback.OK;
 import javax.swing.*;
 
 /**
@@ -74,6 +75,8 @@ public class Login extends JFrame {  //login es un frame = ventana
      */
     public void addEventos(OyenteConexion o) {
         bAceptar.addActionListener(o);
+       
+       
         bCancelar.addActionListener(o);
     }
 

@@ -7,6 +7,8 @@ package com.conexion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import javax.swing.JLabel;
  *
  * @author Jose Ruben
  */
-public class OyenteConexion implements ActionListener {
+public class OyenteConexion extends KeyAdapter implements ActionListener {
 
     private MiOyente oyente;
     private MiPanel panel;
@@ -95,8 +97,11 @@ public class OyenteConexion implements ActionListener {
                 c = new ConexionSQL(nc.tUsuario.getText(),
                         nc.tPuerto.getText(),
                         nc.tHost.getText(), nc.tpContrasenia.getText());
+               
                 if (c.probarConexion()) {
                     JOptionPane.showMessageDialog(panel, "Los parámetros de la conexión son correctos");
+                    c.cerrarConexion();
+                    
                 } else {
                     JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
                 }
@@ -104,11 +109,12 @@ public class OyenteConexion implements ActionListener {
             case "Entrar":
                      //validar la contraseña
                 if (validarcontrasenia(l.tPass.getPassword())) {
-                    //manejar un estadoventanaconsulta para que no haya mas entanas 
-                    consultas = new Consulta(this);
-                  
+                    //manejar un estado ventana consulta para que no haya mas entanas 
+                   
+                 
                     con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
                     con.crearConexion();
+                     consultas = new Consulta(this);
                     l.setVisible(false);
 
                 } else {
@@ -175,6 +181,11 @@ public class OyenteConexion implements ActionListener {
         this.p = p;
     }
 
+    public ConexionSQL getCon() {
+        return con;
+    }
+    
+
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
         int cont = 0;
         //INVESTIGAR COMO VALIDAR EL DOMINIO Y EL HOST
@@ -217,6 +228,11 @@ public class OyenteConexion implements ActionListener {
         Arrays.fill(correctPassword, '0');
 
         return isCorrect;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println(e.getKeyCode());
     }
 
 }
