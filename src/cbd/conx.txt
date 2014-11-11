@@ -13,8 +13,3 @@ localhost
 3306
 root
 root
-MiCon
-127.0.0.1
-3306
-root
-root

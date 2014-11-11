@@ -1,7 +1,8 @@
 package com.conexion;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
+import javax.swing.JFileChooser;
 /**
  * Clase que lee y borra conexiones del archivo conx.txt
  *
@@ -14,7 +15,7 @@ import java.io.*;
  *
  */
 public class Archivo { //clase archivo
-    
+    private String ruta = "";
     
     /**
      * Metodo que lee linea por liena un archivo y devuelve cada liena en un elemento nuevo
@@ -68,6 +69,49 @@ public class Archivo { //clase archivo
         }finally{
             bw.close();//cierro el flujo
             
+        }
+    }
+    
+    public static void guardarConsultaComo(String texto)throws IOException{
+        JFileChooser jfc = new JFileChooser();
+        //jfc.showSaveDialog(null);
+        
+        int eleccion = jfc.showSaveDialog(null);
+        
+        if(eleccion == JFileChooser.APPROVE_OPTION){
+        
+            FileWriter fw = new FileWriter(new File(jfc.getSelectedFile().getPath()));
+        
+            fw.write(texto);
+        
+            fw.close();
+        
+        }else{
+            System.out.println("Mejor no lo guardo...");
+        }
+    }
+    
+    public static String abrirConsulta() throws IOException{
+        String leido = "";
+        
+        JFileChooser jfc = new JFileChooser();
+        int eleccion = jfc.showOpenDialog(null);
+        
+        if(eleccion == JFileChooser.APPROVE_OPTION){
+            String path = jfc.getSelectedFile().getAbsolutePath();
+        
+            FileReader fr = new FileReader(new File(path));
+            BufferedReader br = new BufferedReader(fr);
+            String aux;
+
+            while((aux = br.readLine()) != null){
+                leido += aux + "\n";
+            }
+            
+            return leido;
+            
+        }else{
+            return "--1";
         }
     }
 

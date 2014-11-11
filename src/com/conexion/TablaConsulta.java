@@ -37,10 +37,10 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
      */
     public TablaConsulta(Statement sentencia, String consulta) {
         super("Consulta");
-        setSize(640, 480);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        this.setSize(640, 480);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
         ResultSet resultados;
         try { // SI todo sale bien muestra la consulta si no atrapa la excepcion y la muestra en la ventana 
@@ -70,15 +70,19 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
                 for (int i = 0; i < resultados.getMetaData().getColumnCount(); i++) {
                     fila[i] = resultados.getString(i + 1);
                 }
+                
                 modelo.addRow(fila);
             }
 
             setVisible(true);
 
         } catch (SQLException ex) {
-            JLabel lError =new JLabel("Error "+ex);
-            this.add(lError);
-            this.setVisible(true);
+            // Si hubo un error, se muestra el error y se elimina la tabla creada...
+            // Esta parte queda a discusión...
+//            JLabel lError = new JLabel("Error "+ex);
+//            this.add(lError);
+//            this.setVisible(true);
+            this.dispose();
         }
 
     }

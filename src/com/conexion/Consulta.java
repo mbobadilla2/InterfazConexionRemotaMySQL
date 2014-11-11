@@ -62,8 +62,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         JMenu archivo = new JMenu("Archivo");
         archivo.add(nuevo);
         archivo.add(abrir);
+        archivo.add(new JSeparator());
         archivo.add(guardar);
         archivo.add(guardarComo);
+        archivo.add(new JSeparator());
         archivo.add(salir);
 
         menu.add(archivo);
@@ -98,6 +100,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public void addEventos() {
         nuevo.addActionListener(oyente);
         run.addActionListener(oyente);
+        abrir.addActionListener(oyente);
+        guardar.addActionListener(oyente);
+        guardarComo.addActionListener(oyente);
+        salir.addActionListener(oyente);
     }
 
     private JTree crearArbol() {

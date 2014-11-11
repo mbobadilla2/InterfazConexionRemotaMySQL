@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class ConexionSQL {
         //variables de clase 
-    private String bd="biblioteca";
+    private String bd="";
     private String user;
     private String port;
     private String host;
@@ -45,7 +45,7 @@ public class ConexionSQL {
         this.port = port;
         this.host = host;
         this.password = password;
-        this.url = "jdbc:mysql://" + host + ":" + port+"/"+bd ;
+        this.url = "jdbc:mysql://" + host + ":" + port ;
     }
         
     /**

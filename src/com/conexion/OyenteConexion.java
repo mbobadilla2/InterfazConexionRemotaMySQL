@@ -111,10 +111,9 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 if (validarcontrasenia(l.tPass.getPassword())) {
                     //manejar un estado ventana consulta para que no haya mas entanas 
                    
-                 
                     con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
                     con.crearConexion();
-                     consultas = new Consulta(this);
+                    consultas = new Consulta(this);
                     l.setVisible(false);
 
                 } else {
@@ -131,12 +130,67 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 String query = consultas.getTaConsulta().getText();
                 
                 if ("".equals(query)) {
-                    JOptionPane.showMessageDialog(consultas, "CONSULTA VACIA", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "CONSULTA VACIA", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    tc = new TablaConsulta(con.getStament(), query);
+                    String queries[] = query.split(";");
                     
-
+                    for(String qry: queries){
+                        tc = new TablaConsulta(con.getStament(), qry);
+                    }
                 }
+                break;
+                
+            case "Nuevo":
+                if(!consultas.getTaConsulta().getText().equals("")){
+                    int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?", 
+                            "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+                    
+                    if(eleccion == JOptionPane.OK_OPTION){
+                        consultas.getTaConsulta().setText("");
+                    }
+                
+                }
+                break;
+                
+            case "Abrir":
+                try {
+                    if(!consultas.getTaConsulta().getText().equals("")){
+
+                        int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?", 
+                                "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+
+                        if(eleccion == JOptionPane.OK_OPTION){
+                            String consultaLeida = Archivo.abrirConsulta();
+
+                            if(!consultaLeida.equals("--1")){
+                                consultas.getTaConsulta().setText(consultaLeida);
+                            }
+                        }
+                    }
+                } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(consultas, "Hubo un error al abrir la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+                break;
+                
+            case "Guardar como...":
+                    try {
+                        Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                break;
+                
+                // Deshabilitado temporalmente...
+            case "Salir":
+                    int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?", 
+                            "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+                
+                if(eleccion == JOptionPane.OK_OPTION){
+                    consultas = null;
+                    con.cerrarConexion();
+                }
+                
                 break;
         }
     }
