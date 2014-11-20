@@ -48,6 +48,7 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
 
             JTable tabla = new JTable();
             DefaultTableModel modelo = new DefaultTableModel();
+            
             JScrollPane desplazar = new JScrollPane(tabla);
             String[] columnas = new String[resultados.getMetaData().getColumnCount()];
 
@@ -79,9 +80,9 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
         } catch (SQLException ex) {
             // Si hubo un error, se muestra el error y se elimina la tabla creada...
             // Esta parte queda a discusión...
-//            JLabel lError = new JLabel("Error "+ex);
-//            this.add(lError);
-//            this.setVisible(true);
+            JLabel lError = new JLabel("Error "+ex);
+            this.add(lError);
+            this.setVisible(true);
             this.dispose();
         }
 

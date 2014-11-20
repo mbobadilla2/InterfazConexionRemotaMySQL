@@ -75,9 +75,8 @@ public class Login extends JFrame {  //login es un frame = ventana
      */
     public void addEventos(OyenteConexion o) {
         bAceptar.addActionListener(o);
-       
-       
         bCancelar.addActionListener(o);
+        tPass.addKeyListener(o);
     }
 
     

@@ -9,8 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -29,7 +30,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private NuevaConexion nc;
     private ArrayList<PanelConexion> conx;
     private PanelConexion p; //conexion actual
-    private Consulta consultas;
+    private Consulta consultas = null;
     private ConexionSQL con;
     ConexionSQL c;
     private Login l;
@@ -42,7 +43,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String etiq = ae.getActionCommand();
-
+        
         switch (etiq) {
             case "Aceptar":
 
@@ -97,23 +98,26 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 c = new ConexionSQL(nc.tUsuario.getText(),
                         nc.tPuerto.getText(),
                         nc.tHost.getText(), nc.tpContrasenia.getText());
-               
+
                 if (c.probarConexion()) {
                     JOptionPane.showMessageDialog(panel, "Los parámetros de la conexión son correctos");
                     c.cerrarConexion();
-                    
+
                 } else {
                     JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             case "Entrar":
-                     //validar la contraseña
+                //validar la contraseña
+                System.out.println("Entrar a la conexion");
                 if (validarcontrasenia(l.tPass.getPassword())) {
                     //manejar un estado ventana consulta para que no haya mas entanas 
-                   
+
                     con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
                     con.crearConexion();
+                    
                     consultas = new Consulta(this);
+                    
                     l.setVisible(false);
 
                 } else {
@@ -128,68 +132,85 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 break;
             case "Ejecutar":
                 String query = consultas.getTaConsulta().getText();
-                
+
                 if ("".equals(query)) {
                     JOptionPane.showMessageDialog(null, "CONSULTA VACIA", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } else {
                     String queries[] = query.split(";");
-                    
-                    for(String qry: queries){
+
+                    for (String qry : queries) {
                         tc = new TablaConsulta(con.getStament(), qry);
                     }
                 }
                 break;
-                
+
             case "Nuevo":
-                if(!consultas.getTaConsulta().getText().equals("")){
-                    int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?", 
+                if (!consultas.getTaConsulta().getText().equals("")) {
+                    int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?",
                             "Advertencia", JOptionPane.OK_CANCEL_OPTION);
-                    
-                    if(eleccion == JOptionPane.OK_OPTION){
+
+                    if (eleccion == JOptionPane.OK_OPTION) {
                         consultas.getTaConsulta().setText("");
                     }
-                
+
                 }
                 break;
-                
+
             case "Abrir":
                 try {
-                    if(!consultas.getTaConsulta().getText().equals("")){
+                    if (!consultas.getTaConsulta().getText().equals("")) {
 
-                        int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?", 
+                        int eleccion = JOptionPane.showConfirmDialog(consultas, "La consulta actual se perderá. ¿Está seguro?",
                                 "Advertencia", JOptionPane.OK_CANCEL_OPTION);
 
-                        if(eleccion == JOptionPane.OK_OPTION){
+                        if (eleccion == JOptionPane.OK_OPTION) {
                             String consultaLeida = Archivo.abrirConsulta();
 
-                            if(!consultaLeida.equals("--1")){
-                                consultas.getTaConsulta().setText(consultaLeida);
-                            }
+                            
                         }
                     }
-                } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(consultas, "Hubo un error al abrir la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                
-                break;
-                
-            case "Guardar como...":
-                    try {
-                        Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                    else{
+                        String consultaLeida = Archivo.abrirConsulta();
+                        consultas.getTaConsulta().setText(consultaLeida);
                     }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(consultas, "Hubo un error al abrir la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
                 break;
-                
-                // Deshabilitado temporalmente...
+
+            case "Guardar como...":
+                try {
+                    Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+
+            // Deshabilitado temporalmente...
             case "Salir":
-                    int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?", 
-                            "Advertencia", JOptionPane.OK_CANCEL_OPTION);
-                
-                if(eleccion == JOptionPane.OK_OPTION){
+                int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
+                        "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+
+                if (eleccion == JOptionPane.OK_OPTION) {
                     consultas = null;
                     con.cerrarConexion();
                 }
+
+                break;
+            case "Guardar":
+                
+                
+                try {
+                    if(Archivo.guardar(consultas.getTaConsulta().getText())){
+                        break;
+                    
+                    }
+                    Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+               
                 
                 break;
         }
@@ -238,7 +259,6 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     public ConexionSQL getCon() {
         return con;
     }
-    
 
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
         int cont = 0;
@@ -286,7 +306,24 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
+        if(e.getKeyCode() == 10){
+             //validar la contraseña
+                System.out.println("Entrar a la conexion");
+                if (validarcontrasenia(l.tPass.getPassword())) {
+                    //manejar un estado ventana consulta para que no haya mas entanas 
+
+                    con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                    con.crearConexion();
+                    
+                    consultas = new Consulta(this);
+                    
+                    l.setVisible(false);
+
+                } else {
+                    JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
+                    l.tPass.setText("");
+                }
+        }
     }
 
 }

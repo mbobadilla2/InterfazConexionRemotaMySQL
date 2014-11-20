@@ -24,7 +24,7 @@ public class Main {         //Clase principal
         OyenteConexion oyenteConexion = new OyenteConexion(oyente); //Instanciamos un segundo oyente de la calse OyenteConexion
         MiPanel panel = new MiPanel(oyente);   // Creamos un panel de tipo MiPanel y le pasamos el primer oyente 
         MenuEmergente menuEmergente = new MenuEmergente(); //creamos un menu de tipo MenuEmergente 
-        Login log = new Login();
+//        Login log = new Login();
 
         //-------------------------------------------------------------------------------------------------
         //Agregar eventos de todas los componentes iniciales...
@@ -34,7 +34,7 @@ public class Main {         //Clase principal
         oyente.setMenuEm(menuEmergente);  //Este menu emergente es el mismo que el que se manejara en oyente
         oyente.setConexiones(panel.getConexiones()); //Oyente va a tener las conexiones que tiene panel cuando se inicia
         oyente.setPanel(panel);  //este panel es el mismo que se manejara en oyente 
-        oyente.setLogin(log);
+//        oyente.setLogin(log);
 
         // damos acceso de ventana nueva conexion al oyenteconexion
         oyenteConexion.setPanel(panel); //este panel es el mismo que se usa en oyente conexion

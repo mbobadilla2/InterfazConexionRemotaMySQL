@@ -2,15 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group name="Practicas">
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/OyenteConexion.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/Archivo.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/Login.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/TablaConsulta.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/Main.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/ConexionSQL.java</file>
-            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam/PinaTeam1.2-master/src/com/conexion/MiOyente.java</file>
-        </group>
         <group>
             <file>file:/Users/Fernando2/OneDrive/ItVer/5to%20Semestre/Fundamentos%20de%20Base%20de%20Datos/Unidad%20III/PinaTeam1.2%20-%20Master/src/com/conexion/OyenteConexion.java</file>
             <file>file:/Users/Fernando2/OneDrive/ItVer/5to%20Semestre/Fundamentos%20de%20Base%20de%20Datos/Unidad%20III/PinaTeam1.2%20-%20Master/src/com/conexion/Archivo.java</file>
@@ -19,6 +10,10 @@
             <file>file:/Users/Fernando2/OneDrive/ItVer/5to%20Semestre/Fundamentos%20de%20Base%20de%20Datos/Unidad%20III/PinaTeam1.2%20-%20Master/src/com/conexion/TablaConsulta.java</file>
             <file>file:/Users/Fernando2/OneDrive/ItVer/5to%20Semestre/Fundamentos%20de%20Base%20de%20Datos/Unidad%20III/PinaTeam1.2%20-%20Master/src/com/conexion/Login.java</file>
             <file>file:/Users/Fernando2/OneDrive/ItVer/5to%20Semestre/Fundamentos%20de%20Base%20de%20Datos/Unidad%20III/PinaTeam1.2%20-%20Master/src/com/conexion/ConexionSQL.java</file>
+        </group>
+        <group name="Practicas">
+            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam1.2-master/src/com/conexion/Consulta.java</file>
+            <file>file:/C:/Users/Luis/Desktop/TECNO/5/FBD/instaladores/PinaTeam1.2-master/src/com/conexion/OyenteConexion.java</file>
         </group>
     </open-files>
 </project-private>

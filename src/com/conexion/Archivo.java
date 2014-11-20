@@ -3,6 +3,7 @@ package com.conexion;
 import java.io.*;
 import java.util.*;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 /**
  * Clase que lee y borra conexiones del archivo conx.txt
  *
@@ -16,6 +17,7 @@ import javax.swing.JFileChooser;
  */
 public class Archivo { //clase archivo
     private String ruta = "";
+    static String rutaGuardada;
     
     /**
      * Metodo que lee linea por liena un archivo y devuelve cada liena en un elemento nuevo
@@ -77,7 +79,11 @@ public class Archivo { //clase archivo
         //jfc.showSaveDialog(null);
         
         int eleccion = jfc.showSaveDialog(null);
-        
+        try{
+            rutaGuardada = jfc.getSelectedFile().getPath();
+        }catch(NullPointerException e){
+            rutaGuardada="";
+        }
         if(eleccion == JFileChooser.APPROVE_OPTION){
         
             FileWriter fw = new FileWriter(new File(jfc.getSelectedFile().getPath()));
@@ -91,6 +97,27 @@ public class Archivo { //clase archivo
         }
     }
     
+    public static boolean guardar(String texto)throws IOException{
+        
+            if(rutaGuardada == null){
+                return false;
+            }
+            System.out.println(rutaGuardada);
+            File guardar = new File(rutaGuardada);
+            
+        
+            FileWriter fw = new FileWriter(guardar);
+        
+            fw.write(texto);
+        
+            fw.close();
+        
+        System.out.println("Guardado : "+rutaGuardada);
+        
+        return true;
+        
+    }
+    
     public static String abrirConsulta() throws IOException{
         String leido = "";
         
@@ -98,9 +125,9 @@ public class Archivo { //clase archivo
         int eleccion = jfc.showOpenDialog(null);
         
         if(eleccion == JFileChooser.APPROVE_OPTION){
-            String path = jfc.getSelectedFile().getAbsolutePath();
+            rutaGuardada = jfc.getSelectedFile().getAbsolutePath();
         
-            FileReader fr = new FileReader(new File(path));
+            FileReader fr = new FileReader(new File(rutaGuardada));
             BufferedReader br = new BufferedReader(fr);
             String aux;
 
@@ -111,7 +138,7 @@ public class Archivo { //clase archivo
             return leido;
             
         }else{
-            return "--1";
+            return null;
         }
     }
 

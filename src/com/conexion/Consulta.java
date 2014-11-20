@@ -112,16 +112,24 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         DefaultTreeModel modelo = new DefaultTreeModel(conexion);
         arbol = new JTree(modelo);
         int cuenta = 0;
-
+        int cuentaTabla = 0;
         for (String a : oyente.getCon().getNombresBD()) {
             DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(a);
             modelo.insertNodeInto(nombreBD, conexion, cuenta);
-            try {
-                int cuentaTabla = 0;
+                int cont3=0;
+            for (int i = cuentaTabla; i < oyente.getCon().getNombresTablas().size(); i++) {
 
-            } catch (Exception e) {
-                System.out.println("Error " + e);
+                if ("*".equals(oyente.getCon().getNombresTablas().get(i))) {
+                    cuentaTabla++;
+                    break;
+                }
+                DefaultMutableTreeNode datoTable = new DefaultMutableTreeNode(oyente.getCon().getNombresTablas().get(i));
+
+                modelo.insertNodeInto(datoTable, nombreBD,cont3);
+                cuentaTabla++;
             }
+
+            cuenta++;
 
         }
         return arbol;

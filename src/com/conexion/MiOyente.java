@@ -58,10 +58,11 @@ public class MiOyente extends MouseAdapter implements ActionListener {
     @Override
     public void mouseClicked(MouseEvent me) {
         // El click derecho del ratón es el #3;
-
+        
         conxActual = (PanelConexion) me.getSource();
 
        // System.out.println("Hola mama, soy el panel #" + conxActual.getName());
+        this.login = new Login();
         loginActivo = login.isVisible();
 
         if (me.getButton() == 1 && !loginActivo) {
