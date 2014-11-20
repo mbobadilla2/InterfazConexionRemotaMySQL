@@ -139,4 +139,20 @@ public class ConexionSQL {
         return nombresTablas;
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+   
 }

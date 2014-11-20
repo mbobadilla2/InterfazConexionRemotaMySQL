@@ -13,3 +13,8 @@ localhost
 3306
 root
 root
+probarconexion
+127.0.0.1
+3306
+luis
+1234

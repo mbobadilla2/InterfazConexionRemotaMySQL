@@ -3,6 +3,7 @@ package com.conexion;
 import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 /**
@@ -21,6 +22,8 @@ public class Consulta extends JFrame { //clase consulta es una ventana
 
     private OyenteConexion oyente;
     private JButton run = new JButton("Ejecutar");
+    private String[] combo =new String[]{"Actualizacion","Seleccion"};
+    private JComboBox operacion=new JComboBox(combo);
     private JMenuItem nuevo;
     private JMenuItem abrir;
     private JMenuItem guardar;
@@ -37,7 +40,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      * que los necesiten
      */
     public Consulta(OyenteConexion oyente) {
-        this.setTitle("Conexion");  //HAY QUE MOSTRAR AQUI EL NOMBRE DE LA CONEXION 
+        this.setTitle("Conexion con usuario :  " +oyente.getCon().getUser()+"   en   " + oyente.getCon().getUrl()); 
         this.oyente = oyente;
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
@@ -80,8 +83,12 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         pEste.add(ar);
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
+        pSur.add(new JLabel("Tipo de operación : "));
+         pSur.add(operacion);
         pSur.add(run);
-
+       
+        
+   
         this.add(pEste, BorderLayout.WEST);
         this.setJMenuBar(menu);
         this.add(pNorte, "North");
@@ -111,6 +118,13 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         DefaultMutableTreeNode conexion = new DefaultMutableTreeNode("Bases de datos");
         DefaultTreeModel modelo = new DefaultTreeModel(conexion);
         arbol = new JTree(modelo);
+        
+        DefaultTreeCellRenderer render=(DefaultTreeCellRenderer)arbol.getCellRenderer();
+       
+        render.setLeafIcon(new ImageIcon("src/icon/table.png"));
+        render.setClosedIcon(new ImageIcon("src/icon/db.png"));
+        render.setOpenIcon(new ImageIcon("src/icon/db.png"));
+        
         int cuenta = 0;
         int cuentaTabla = 0;
         for (String a : oyente.getCon().getNombresBD()) {
@@ -143,5 +157,12 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public void setTaConsulta(JTextArea taConsulta) {
         this.taConsulta = taConsulta;
     }
+
+    public JComboBox getOperacion() {
+        return operacion;
+    }
+
+   
+    
 
 }
