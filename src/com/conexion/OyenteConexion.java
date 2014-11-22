@@ -5,6 +5,7 @@
  */
 package com.conexion;
 
+import java.awt.IllegalComponentStateException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,19 +31,20 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private MiPanel panel;
     private NuevaConexion nc;
     private ArrayList<PanelConexion> conx;
-    private PanelConexion p; //conexion actual
+    protected PanelConexion p; //conexion actual
     private Consulta consultas = null;
     private ConexionSQL con;
-    ConexionSQL c;
+    private ConexionSQL c;
     private Login l;
     private TablaConsulta tc;
+    private int[] teclasPresionadas;
 
     public OyenteConexion(MiOyente oyente) {
         this.oyente = oyente;
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
+    public void actionPerformed(ActionEvent ae) throws IllegalComponentStateException{
         String etiq = ae.getActionCommand();
 
         switch (etiq) {
@@ -82,12 +84,14 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     borrarCeldas();
 
                 } else {
-                    JOptionPane.showMessageDialog(nc, "DATOS INCORRECTOS");
+                    JOptionPane.showMessageDialog(nc, "Los datos introducidos son incorrectos");
                 }
 
                 break;
             case "Cancelar":
-                if (JOptionPane.showConfirmDialog(panel, "Seguro que quieres Cancelar, Se elminaran los datos escritos") == 0) {
+                int opcion = JOptionPane.showConfirmDialog(panel, "¿Seguro que quieres eliminar la conexión?", "Eliminar conexión", JOptionPane.OK_CANCEL_OPTION);
+                
+                if (opcion == JOptionPane.OK_OPTION) {
                     nc.setVisible(false);
                     borrarCeldas();
 
@@ -132,24 +136,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
                 break;
             case "Ejecutar":
-                String query = consultas.getTaConsulta().getText();
-
-                if ("".equals(query)) {
-                    JOptionPane.showMessageDialog(null, "CONSULTA VACIA", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    try {
-                        String queries[] = query.split(";");
-                        con.getStament().executeQuery(queries[0]);
-                        System.out.println(queries[0]+" " +queries[1]);
-                       
-//                    for (String qry : queries) {
-
-                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
-//                    }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(OyenteConexion.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                ejecutarConsulta();
                 break;
 
             case "Nuevo":
@@ -173,7 +160,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
                         if (eleccion == JOptionPane.OK_OPTION) {
                             String consultaLeida = Archivo.abrirConsulta();
-
+                            consultas.getTaConsulta().setText(consultaLeida);
                         }
                     } else {
                         String consultaLeida = Archivo.abrirConsulta();
@@ -219,49 +206,40 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 break;
         }
     }
+    
+    private void ejecutarConsulta(){
+        String query = consultas.getTaConsulta().getText();
 
-    public MiPanel getP() {
-        return panel;
-    }
-
-    public void setPanel(MiPanel p) {
-        this.panel = p;
-    }
-
-    public NuevaConexion getNc() {
-        return nc;
-    }
-
-    public void setNc(NuevaConexion nc) {
-        this.nc = nc;
-    }
-
-    public ArrayList<PanelConexion> getConx() {
-        return conx;
-    }
-
-    public void setConx(ArrayList<PanelConexion> conx) {
-        this.conx = conx;
-    }
-
-    public Login getL() {
-        return l;
-    }
-
-    public void setL(Login l) {
-        this.l = l;
-    }
-
-    public PanelConexion getPca() {
-        return p;
-    }
-
-    public void setP(PanelConexion p) {
-        this.p = p;
-    }
-
-    public ConexionSQL getCon() {
-        return con;
+                if ("".equals(query)) {
+                    JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        String queries[] = query.split(";");
+                        con.getStament().executeQuery(queries[0]);
+                        System.out.println(queries[0]+ " " +queries[1]);
+                       
+//                    for (String qry : queries) {
+                        // Tipo 0 = Actualización
+                        // Tipo 1 = Selección
+                        int tipoCons;
+                        
+                        if(queries[1].toLowerCase().trim().startsWith("select")){
+                            tipoCons = 1;
+                        }else{
+                            tipoCons = 0;
+                        }
+                        
+                        System.out.println("Tipo cons " + tipoCons);
+//                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
+                        tc = new TablaConsulta(con.getStament(), queries[1], tipoCons);
+//                    }
+                    } catch(SQLException ex) {
+//                      Logger.getLogger(OyenteConexion.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
+                    } catch(IndexOutOfBoundsException ie){
+                        JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
     }
 
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
@@ -310,7 +288,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 10) {
+        if (e.getKeyCode() == 10 && l.isVisible()) {
             //validar la contraseña
             System.out.println("Entrar a la conexion");
             if (validarcontrasenia(l.tPass.getPassword())) {
@@ -327,7 +305,70 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                 l.tPass.setText("");
             }
+        
+        }else if(!l.isVisible() && consultas != null){
+        
+            if(e.getKeyCode() == KeyEvent.VK_SHIFT){
+                teclasPresionadas[0] = e.getKeyCode();
+            
+            }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                teclasPresionadas[1] = e.getKeyCode();
+            }
+
+            if(teclasPresionadas[0] == KeyEvent.VK_SHIFT && teclasPresionadas[1] == KeyEvent.VK_ENTER){
+//                System.out.println("Control + Enter!");
+                ejecutarConsulta();
+            }
         }
     }
+    
+    @Override
+    public void keyReleased(KeyEvent e){
+        teclasPresionadas = new int[2];
+    }
+    
+    public MiPanel getP() {
+        return panel;
+    }
 
+    public void setPanel(MiPanel p) {
+        this.panel = p;
+    }
+
+    public NuevaConexion getNc() {
+        return nc;
+    }
+
+    public void setNc(NuevaConexion nc) {
+        this.nc = nc;
+    }
+
+    public ArrayList<PanelConexion> getConx() {
+        return conx;
+    }
+
+    public void setConx(ArrayList<PanelConexion> conx) {
+        this.conx = conx;
+    }
+
+    public Login getL() {
+        return l;
+    }
+
+    public void setL(Login l) {
+        this.l = l;
+    }
+
+    public PanelConexion getPca() {
+        return p;
+    }
+
+    public void setP(PanelConexion p) {
+        this.p = p;
+    }
+
+    public ConexionSQL getCon() {
+        return con;
+    }
 }
+

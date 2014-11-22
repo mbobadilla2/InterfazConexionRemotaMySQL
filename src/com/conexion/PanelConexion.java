@@ -31,6 +31,7 @@ public class PanelConexion extends JPanel{ //clase panelConexion es un JPanel
     public final void addComponentes(){
         this.setLayout(new GridLayout(5, 3));
         this.setPreferredSize(new Dimension(300, 176));
+        this.setBorder(BorderFactory.createLineBorder(this.getBackground(), 5));
         infoConexion = new ArrayList<>();
         infoConexion.add(new JLabel());
         infoConexion.add(new JLabel());

@@ -1,6 +1,8 @@
 package com.conexion;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Esta es la clase main desde donde se iniciarán todos los enlaces necesarios
@@ -17,9 +19,10 @@ import javax.swing.JFrame;
 public class Main {         //Clase principal 
 
     public static void main(String[] args) { //Método main 
-        
+        // Colocamos el look and feel del so que esté corriendo la aplicación
+        setLookAndFeel();
 
-        JFrame ventanaPrincipal = new JFrame("Untittled"); //Instanciamos una Ventana tipo JFrame Con su nombre en el Constructor
+        JFrame ventanaPrincipal = new JFrame("Welcome!"); //Instanciamos una Ventana tipo JFrame Con su nombre en el Constructor
         MiOyente oyente = new MiOyente();  //Instanciamos un oyente de la clase Mi Oyente  
         OyenteConexion oyenteConexion = new OyenteConexion(oyente); //Instanciamos un segundo oyente de la calse OyenteConexion
         MiPanel panel = new MiPanel(oyente);   // Creamos un panel de tipo MiPanel y le pasamos el primer oyente 
@@ -47,5 +50,26 @@ public class Main {         //Clase principal
         ventanaPrincipal.setVisible(true);  //Ponemos visible a la ventana principal
         ventanaPrincipal.setDefaultCloseOperation(3);   //Definimos el comportamiento de la ventana principal cuando le apretamos el boton cerrar
 
+    }
+    
+    public static void setLookAndFeel(){
+       try{
+            //Poner el nombre de la aplicacion en la barra de tareas (OS X)
+            System.setProperty( "com.apple.mrj.application.apple.menu.about.name", "PinaProject" );
+            
+            //Poner el JMenuBar en la barra de tareas de OS X
+            System.setProperty( "com.apple.macos.useScreenMenuBar", "true" );
+            
+            //Poner el JMenuBar en la barra de tareas de OS X -Versiones antiguas de Java
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            
+            //Colocar el look and feel del sistema operativo que se esté usando
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            
+        }catch(UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+                | IllegalAccessException e){
+            
+        }
+         
     }
 }

@@ -6,6 +6,7 @@
 package com.conexion;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,9 +43,11 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
         super("Consulta");
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout());
       
+        // Tipo 0 = Actualización
+        // Tipo 1 = Selección
 
         if (tipo == 1) {
             System.out.println("entra 1");
@@ -85,34 +88,43 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
 
             } catch (SQLException ex) {
             // Si hubo un error, se muestra el error y se elimina la tabla creada...
-                // Esta parte queda a discusión...
-                JLabel lError = new JLabel("Error " + ex);
-                this.add(lError);
-                this.setVisible(true);
-                this.dispose();
+//                // Esta parte queda a discusión...
+//                JLabel lError = new JLabel("Error " + ex);
+//                this.add(lError);
+//                this.setVisible(true);
+//                this.dispose();
+                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+            
             }
         } else {
             System.out.println("entra 0");
             ResultSet resultados;
             try { // SI todo sale bien muestra la consulta si no atrapa la excepcion y la muestra en la ventana 
                 int exito = sentencia.executeUpdate(consulta); //ejecuta la consulta
-                System.out.println("hs"+exito);
-                if (exito == 0) {
-                    add(new JLabel("Consulta hecha con exito"));
-                } else {
-                    add(new JLabel("Consulta Fallida"));
-                }
+                
+                System.out.println("hs " + exito);
+//                
+//                if (exito == Statement.RETURN_GENERATED_KEYS) {
+//                    add(new JLabel("Consulta hecha con exito"));
+//                    
+//                } else if(exito == Statement.EXECUTE_FAILED){
+//                    
+//                    add(new JLabel("Consulta Fallida"));
+//                }
+                
+                JOptionPane.showMessageDialog(null, "Instrucción ejecutada correctamente", "Ejecución correcta",
+                        JOptionPane.YES_OPTION, new ImageIcon("src/icon/dbmain.png"));
 
-                this.setVisible(true);
+//                this.setVisible(true);
 
             } catch (SQLException ex) {
             // Si hubo un error, se muestra el error y se elimina la tabla creada...
                 
-                JLabel lError = new JLabel("Error " + ex);
-                this.add(lError);
-                this.setVisible(true);
-                this.dispose();
-
+//                JLabel lError = new JLabel("Error " + ex);
+//                this.add(lError);
+//                this.setVisible(true);
+//                this.dispose();
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
             }
 
         }

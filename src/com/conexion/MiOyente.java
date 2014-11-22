@@ -4,10 +4,11 @@
  */
 package com.conexion;
 
+import java.awt.IllegalComponentStateException;
 import java.awt.event.*;
 import java.io.IOException;
-import javax.swing.*;
 import java.util.*;
+import javax.swing.*;
 
 /**
  *
@@ -26,7 +27,7 @@ public class MiOyente extends MouseAdapter implements ActionListener {
 
     // Todos los botones;
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) throws IllegalComponentStateException{
         String etiq = e.getActionCommand();
         // Dependiendo del botón que se haya pulsado...
         switch (etiq) {
@@ -40,7 +41,9 @@ public class MiOyente extends MouseAdapter implements ActionListener {
                 break;
 
             case "Borrar":
-                if (JOptionPane.showConfirmDialog(panel, "Seguro que quieres eliminar la conexion") == 0) {
+                int opcion = JOptionPane.showConfirmDialog(panel, "¿Seguro que quieres eliminar la conexión?", "Eliminar conexión", JOptionPane.OK_CANCEL_OPTION);
+                
+                if (opcion == JOptionPane.OK_OPTION) {
                     try {
                         //confirmacion
                         borrarConexion();
@@ -56,7 +59,7 @@ public class MiOyente extends MouseAdapter implements ActionListener {
 
     // Eventos para las conexiones guardadas;
     @Override
-    public void mouseClicked(MouseEvent me) {
+    public void mouseClicked(MouseEvent me) throws IllegalComponentStateException{
         // El click derecho del ratón es el #3;
         
         conxActual = (PanelConexion) me.getSource();
@@ -85,10 +88,10 @@ public class MiOyente extends MouseAdapter implements ActionListener {
             //Hacer que la ventana parpadee
         }
     }
-
+    
     // EN ALGUNAS OCASIONES LANZA UNA EXCEPCION IllegalComponentStateException
     // Para mostrar el menú contextual de las conexiones...
-    public void mostrarMenuEmergente(MouseEvent e) {
+    public void mostrarMenuEmergente(MouseEvent e) throws IllegalComponentStateException{
         //System.out.println("Funciona");
         menuEm.show(e.getComponent(), e.getX(), e.getY());
     }
@@ -150,4 +153,5 @@ public class MiOyente extends MouseAdapter implements ActionListener {
     public void setLoginActivo(boolean loginActivo) {
         this.loginActivo = loginActivo;
     }
+
 }
