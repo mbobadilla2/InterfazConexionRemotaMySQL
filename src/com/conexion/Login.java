@@ -61,9 +61,9 @@ public class Login extends JFrame {  //login es un frame = ventana
         login.add(lPass);
         login.add(tPass);
         
-        pSur.add(bAceptar);
         pSur.add(bCancelar);
-
+        pSur.add(bAceptar);
+        
         this.setAlwaysOnTop(true);
         this.add(pSur, "South");
         this.add(login, "Center");
@@ -75,6 +75,7 @@ public class Login extends JFrame {  //login es un frame = ventana
      */
     public void addEventos(OyenteConexion o) {
         bAceptar.addActionListener(o);
+        bAceptar.setSelected(true);
         bCancelar.addActionListener(o);
         tPass.addKeyListener(o);
     }

@@ -37,7 +37,8 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private ConexionSQL c;
     private Login l;
     private TablaConsulta tc;
-    private int[] teclasPresionadas;
+    private int[] teclasPresionadas = new int[2];
+    private boolean combinacionTeclas = false;
 
     public OyenteConexion(MiOyente oyente) {
         this.oyente = oyente;
@@ -88,6 +89,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
+                
             case "Cancelar":
                 int opcion = JOptionPane.showConfirmDialog(panel, "¿Seguro que quieres eliminar la conexión?", "Eliminar conexión", JOptionPane.OK_CANCEL_OPTION);
                 
@@ -96,8 +98,8 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     borrarCeldas();
 
                 }
-
                 break;
+                
             case "Probar Conexion":
                 //Testea conexion 
                 c = new ConexionSQL(nc.tUsuario.getText(),
@@ -112,6 +114,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
+                
             case "Entrar":
                 //validar la contraseña
                 System.out.println("Entrar a la conexion");
@@ -130,11 +133,12 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     l.tPass.setText("");
                 }
                 break;
+                
             case "Regresar":
                 l.setVisible(false);
                 l.tPass.setText("");
-
                 break;
+                
             case "Ejecutar":
                 ejecutarConsulta();
                 break;
@@ -146,11 +150,12 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
                     if (eleccion == JOptionPane.OK_OPTION) {
                         consultas.getTaConsulta().setText("");
+                        Archivo.rutaGuardada = "";
                     }
 
                 }
                 break;
-
+                
             case "Abrir":
                 try {
                     if (!consultas.getTaConsulta().getText().equals("")) {
@@ -171,15 +176,16 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
-
+                
             case "Guardar como...":
                 try {
                     Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
+                    Archivo.rutaGuardada = "";
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
-
+ 
             // Deshabilitado temporalmente...
             case "Salir":
                 int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
@@ -191,14 +197,16 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
+                
             case "Guardar":
 
                 try {
                     if (Archivo.guardar(consultas.getTaConsulta().getText())) {
                         break;
 
+                    }else{
+                        Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
                     }
-                    Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -207,23 +215,41 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         }
     }
     
-    private void ejecutarConsulta(){
+    private void ejecutarConsulta() throws IllegalComponentStateException{
         String query = consultas.getTaConsulta().getText();
+        String queries[];
+        String consulta;
+        
+        boolean use = false;
+        
+        // Esto es para la combinacion de teclas en el área de consultas...
+        combinacionTeclas = false;
 
                 if ("".equals(query)) {
                     JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    // Si el string empieza con use, asuminos que se especifica base de datos
+                    // si no, se hace consulta sin especificarla con use...
+                    if(query.toUpperCase().trim().startsWith("USE")){
+                        use = true;
+                    }
+                    
                     try {
-                        String queries[] = query.split(";");
-                        con.getStament().executeQuery(queries[0]);
-                        System.out.println(queries[0]+ " " +queries[1]);
-                       
-//                    for (String qry : queries) {
+                        
+                        if(use){
+                            queries = query.trim().split(";");
+                            con.getStament().executeQuery(queries[0]);
+                            System.out.println(queries[0]+ " " +queries[1] + " Con use");
+                            consulta = queries[1];
+                        }else{
+                            consulta = query.trim();
+                        }
+
                         // Tipo 0 = Actualización
                         // Tipo 1 = Selección
                         int tipoCons;
                         
-                        if(queries[1].toLowerCase().trim().startsWith("select")){
+                        if(consulta.toUpperCase().trim().startsWith("SELECT")){
                             tipoCons = 1;
                         }else{
                             tipoCons = 0;
@@ -231,13 +257,14 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                         
                         System.out.println("Tipo cons " + tipoCons);
 //                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
-                        tc = new TablaConsulta(con.getStament(), queries[1], tipoCons);
-//                    }
+                        tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
+
                     } catch(SQLException ex) {
 //                      Logger.getLogger(OyenteConexion.class.getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
                     } catch(IndexOutOfBoundsException ie){
                         JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("Te saliste!");
                     }
                 }
     }
@@ -316,15 +343,22 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
             }
 
             if(teclasPresionadas[0] == KeyEvent.VK_SHIFT && teclasPresionadas[1] == KeyEvent.VK_ENTER){
-//                System.out.println("Control + Enter!");
-                ejecutarConsulta();
+                combinacionTeclas = true;
             }
         }
     }
     
     @Override
     public void keyReleased(KeyEvent e){
-        teclasPresionadas = new int[2];
+        teclasPresionadas[0] = 1;
+        teclasPresionadas[1] = 1;
+
+        if(combinacionTeclas){
+            combinacionTeclas = false;
+            System.out.println("-----Control + Enter!");
+            ejecutarConsulta();
+        }
+//        System.out.println("Teclas liberadas");
     }
     
     public MiPanel getP() {

@@ -170,7 +170,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
                             cuentaTabla++;
 
                        }
-                        System.out.println("");
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
                 System.out.println("Error " + e);

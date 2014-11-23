@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  */
 public class Archivo { //clase archivo
     private String ruta = "";
-    static String rutaGuardada;
+    static String rutaGuardada="";
     
     /**
      * Metodo que lee linea por liena un archivo y devuelve cada liena en un elemento nuevo
@@ -42,7 +42,7 @@ public class Archivo { //clase archivo
             
             archivo.close();//Cerrar el flujo de lectura
         }catch(IOException ioe){
-            System.out.println("Hubo un error: " + ioe);
+            JOptionPane.showMessageDialog(null, "Ocurrió un error al abrir el archivo", "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
         
@@ -56,7 +56,7 @@ public class Archivo { //clase archivo
      * @param ruta ruta del archivo desde donde se borrara la conexion 
      */
     public static void escribirConexiones(ArrayList<PanelConexion> conexiones, String ruta) throws IOException {
-         BufferedWriter bw=new BufferedWriter(new FileWriter(ruta));//flujo de escritura
+        BufferedWriter bw=new BufferedWriter(new FileWriter(ruta));//flujo de escritura
         try {
            
             for (int i = 0; i < conexiones.size(); i++) {
@@ -67,7 +67,8 @@ public class Archivo { //clase archivo
                     
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar las conexiones", "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
             bw.close();//cierro el flujo
             
@@ -81,9 +82,11 @@ public class Archivo { //clase archivo
         int eleccion = jfc.showSaveDialog(null);
         try{
             rutaGuardada = jfc.getSelectedFile().getPath();
+            
         }catch(NullPointerException e){
             rutaGuardada="";
         }
+        
         if(eleccion == JFileChooser.APPROVE_OPTION){
         
             FileWriter fw = new FileWriter(new File(jfc.getSelectedFile().getPath()));
@@ -91,17 +94,20 @@ public class Archivo { //clase archivo
             fw.write(texto);
         
             fw.close();
+            System.out.println("Guardado : "+rutaGuardada);
         
         }else{
             System.out.println("Mejor no lo guardo...");
+           
         }
     }
     
     public static boolean guardar(String texto)throws IOException{
         
-            if(rutaGuardada == null){
+            if(rutaGuardada.equals("")){
                 return false;
             }
+            
             System.out.println(rutaGuardada);
             File guardar = new File(rutaGuardada);
             
