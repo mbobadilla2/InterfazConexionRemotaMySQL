@@ -93,41 +93,10 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
 //                this.add(lError);
 //                this.setVisible(true);
 //                this.dispose();
-                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
             
             }
-        } else {
-            System.out.println("entra 0");
-            ResultSet resultados;
-            try { // SI todo sale bien muestra la consulta si no atrapa la excepcion y la muestra en la ventana 
-                int exito = sentencia.executeUpdate(consulta); //ejecuta la consulta
-                
-                System.out.println("hs " + exito);
-//                
-//                if (exito == Statement.RETURN_GENERATED_KEYS) {
-//                    add(new JLabel("Consulta hecha con exito"));
-//                    
-//                } else if(exito == Statement.EXECUTE_FAILED){
-//                    
-//                    add(new JLabel("Consulta Fallida"));
-//                }
-                
-                JOptionPane.showMessageDialog(null, "Instrucción ejecutada correctamente", "Ejecución correcta",
-                        JOptionPane.YES_OPTION, new ImageIcon("src/icon/dbmain.png"));
-
-//                this.setVisible(true);
-
-            } catch (SQLException ex) {
-            // Si hubo un error, se muestra el error y se elimina la tabla creada...
-                
-//                JLabel lError = new JLabel("Error " + ex);
-//                this.add(lError);
-//                this.setVisible(true);
-//                this.dispose();
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        }
+        } 
 
     }
 }

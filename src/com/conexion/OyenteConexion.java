@@ -45,7 +45,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) throws IllegalComponentStateException {
+    public void actionPerformed(ActionEvent ae) throws IllegalComponentStateException{
         String etiq = ae.getActionCommand();
 
         switch (etiq) {
@@ -89,17 +89,17 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
-
+                
             case "Cancelar":
                 int opcion = JOptionPane.showConfirmDialog(panel, "¿Seguro que quieres eliminar la conexión?", "Eliminar conexión", JOptionPane.OK_CANCEL_OPTION);
-
+                
                 if (opcion == JOptionPane.OK_OPTION) {
                     nc.setVisible(false);
                     borrarCeldas();
 
                 }
                 break;
-
+                
             case "Probar Conexion":
                 //Testea conexion 
                 c = new ConexionSQL(nc.tUsuario.getText(),
@@ -114,36 +114,31 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
-
+                
             case "Entrar":
                 //validar la contraseña
-                con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                System.out.println("Entrar a la conexion");
+                if (validarcontrasenia(l.tPass.getPassword())) {
+                    //manejar un estado ventana consulta para que no haya mas entanas 
 
-                if (con.probarConexion()) {
-                    if (validarcontrasenia(l.tPass.getPassword())) {
-                        //manejar un estado ventana consulta para que no haya mas entanas 
+                    con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                    con.crearConexion();
 
-                        con.crearConexion();
+                    consultas = new Consulta(this);
 
-                        consultas = new Consulta(this);
+                    l.setVisible(false);
 
-                        l.setVisible(false);
-
-                    } else {
-                        JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
-                        l.tPass.setText("");
-                    }
                 } else {
-                    JOptionPane.showMessageDialog(l, "Usuario no existe en Mysql", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                     l.tPass.setText("");
                 }
                 break;
-
+                
             case "Regresar":
                 l.setVisible(false);
                 l.tPass.setText("");
                 break;
-
+                
             case "Ejecutar":
                 ejecutarConsulta();
                 break;
@@ -160,7 +155,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
                 }
                 break;
-
+                
             case "Abrir":
                 try {
                     if (!consultas.getTaConsulta().getText().equals("")) {
@@ -181,7 +176,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
-
+                
             case "Guardar como...":
                 try {
                     Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
@@ -190,7 +185,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     JOptionPane.showMessageDialog(consultas, "Hubo un error al guardar la cosulta", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
-
+ 
             // Deshabilitado temporalmente...
             case "Salir":
                 int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
@@ -202,14 +197,14 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
-
+                
             case "Guardar":
 
                 try {
                     if (Archivo.guardar(consultas.getTaConsulta().getText())) {
                         break;
 
-                    } else {
+                    }else{
                         Archivo.guardarConsultaComo(consultas.getTaConsulta().getText());
                     }
                 } catch (IOException ex) {
@@ -219,59 +214,63 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 break;
         }
     }
-
-    private void ejecutarConsulta() throws IllegalComponentStateException {
+    
+    private void ejecutarConsulta() throws IllegalComponentStateException{
         String query = consultas.getTaConsulta().getText();
         String queries[];
         String consulta;
-
+        
         boolean use = false;
-
+        
         // Esto es para la combinacion de teclas en el área de consultas...
         combinacionTeclas = false;
 
-        if ("".equals(query)) {
-            JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Si el string empieza con use, asuminos que se especifica base de datos
-            // si no, se hace consulta sin especificarla con use...
-            if (query.toUpperCase().trim().startsWith("USE")) {
-                use = true;
-            }
-
-            try {
-
-                if (use) {
-                    queries = query.trim().split(";");
-                    con.getStament().executeQuery(queries[0]);
-                    System.out.println(queries[0] + " " + queries[1] + " Con use");
-                    consulta = queries[1];
+                if ("".equals(query)) {
+                    JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    consulta = query.trim();
-                }
+                    // Si el string empieza con use, asuminos que se especifica base de datos
+                    // si no, se hace consulta sin especificarla con use...
+                    if(query.toUpperCase().trim().startsWith("USE")){
+                        use = true;
+                    }
+                    
+                    try {
+                        
+                        if(use){
+                            queries = query.trim().split(";");
+                            con.getStament().executeQuery(queries[0]);
+                            System.out.println(queries[0]+ " " +queries[1] + " Con use");
+                            consulta = queries[1];
+                        }else{
+                            consulta = query.trim();
+                        }
 
-                // Tipo 0 = Actualización
-                // Tipo 1 = Selección
-                int tipoCons;
-
-                if (consulta.toUpperCase().trim().startsWith("SELECT")) {
-                    tipoCons = 1;
-                } else {
-                    tipoCons = 0;
-                }
-
-                System.out.println("Tipo cons " + tipoCons);
+                        // Tipo 0 = Actualización
+                        // Tipo 1 = Selección
+                        
+                        int tipoCons;
+                        
+                        if(con.getStament().execute(consulta)){
+                            tipoCons = 1;
+                        }else{
+                            tipoCons = 0;
+                        }
+                        
+                        System.out.println("Tipo cons " + tipoCons);
+                        if(tipoCons==0)
+                            JOptionPane.showMessageDialog(null, "Consulta realizada con exito", "Exito", JOptionPane.CLOSED_OPTION);
 //                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
-                tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
+                        tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
 
-            } catch (SQLException ex) {
+                    } catch(SQLException ex) {
 //                      Logger.getLogger(OyenteConexion.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
-            } catch (IndexOutOfBoundsException ie) {
-                JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
-                System.out.println("Te saliste!");
-            }
-        }
+                        //System.out.println(ex);
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
+                    } catch(IndexOutOfBoundsException ie){
+                        JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("Te saliste!");
+                    }
+                }
     }
 
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
@@ -322,55 +321,50 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == 10 && l.isVisible()) {
             //validar la contraseña
+            System.out.println("Entrar a la conexion");
+            if (validarcontrasenia(l.tPass.getPassword())) {
+                //manejar un estado ventana consulta para que no haya mas entanas 
 
-            con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                con = new ConexionSQL(p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                con.crearConexion();
 
-            if (con.probarConexion()) {
-                if (validarcontrasenia(l.tPass.getPassword())) {
-                    //manejar un estado ventana consulta para que no haya mas entanas 
+                consultas = new Consulta(this);
 
-                    con.crearConexion();
+                l.setVisible(false);
 
-                    consultas = new Consulta(this);
-
-                    l.setVisible(false);
-
-                } else {
-                    JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
-                    l.tPass.setText("");
-                }
             } else {
-                JOptionPane.showMessageDialog(l, "Usuario no existe en Mysql", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                 l.tPass.setText("");
             }
-        } else if (!l.isVisible() && consultas != null) {
-
-            if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+        
+        }else if(!l.isVisible() && consultas != null){
+        
+            if(e.getKeyCode() == KeyEvent.VK_SHIFT){
                 teclasPresionadas[0] = e.getKeyCode();
-
-            } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            
+            }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
                 teclasPresionadas[1] = e.getKeyCode();
             }
 
-            if (teclasPresionadas[0] == KeyEvent.VK_SHIFT && teclasPresionadas[1] == KeyEvent.VK_ENTER) {
+            if(teclasPresionadas[0] == KeyEvent.VK_SHIFT && teclasPresionadas[1] == KeyEvent.VK_ENTER){
                 combinacionTeclas = true;
             }
         }
     }
-
+    
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e){
         teclasPresionadas[0] = 1;
         teclasPresionadas[1] = 1;
 
-        if (combinacionTeclas) {
+        if(combinacionTeclas){
             combinacionTeclas = false;
             System.out.println("-----Control + Enter!");
             ejecutarConsulta();
         }
 //        System.out.println("Teclas liberadas");
     }
-
+    
     public MiPanel getP() {
         return panel;
     }
@@ -415,3 +409,4 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         return con;
     }
 }
+

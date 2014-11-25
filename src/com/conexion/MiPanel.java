@@ -1,7 +1,6 @@
 package com.conexion;
 
 import java.awt.*;
-import static java.awt.Frame.HAND_CURSOR;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -51,8 +50,6 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
      * @return void
      */
     private void agregarComponentes() {
-     
-        
         this.setLayout(new BorderLayout()); // El layout del panel es un borderlayout(n,s,e,w,c)
 
         // Declaraciones -------------------------------------------------------------------------------------------------
@@ -137,8 +134,6 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         this.add(scroll, "Center");   //scroll en el centro de este panel
 
         addEventos(); //agregamos eventos a los elementos del panel 
-        
-        agregartips();
 
     }
     /**
@@ -247,15 +242,7 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         bAgregarConexion.addActionListener(this.oyente);
        
     }
-    
-     private void agregartips() {
-        bAgregarConexion.setToolTipText("Haz clic aqui para agregar una nueva conexión a la lista de conexiones");
-        bAgregarConexion.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         for (PanelConexion conexione : conexiones) {
-             conexione.setToolTipText("Conexion #" +conexione.getName());
-             conexione.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         }
-    }
+
     
      //GETTERS Y SETTERS --------------------------------------------------------------------------------------------------------------
     
@@ -270,7 +257,5 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
     public void setConexionesArchivo(ArrayList<String> ConexionesArchivo) {
         this.conexionesArchivo = ConexionesArchivo;
     }
-
-   
 
 }
