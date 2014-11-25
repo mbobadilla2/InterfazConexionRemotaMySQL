@@ -75,6 +75,7 @@ public class NuevaConexion extends JFrame {
 
         this.add(panel, "Center");
         this.add(pSur, "South");
+        agregartips();
     }
 
     /**
@@ -86,5 +87,17 @@ public class NuevaConexion extends JFrame {
         bAceptar.addActionListener(oyente);
         bCancelar.addActionListener(oyente);
         bPrueba.addActionListener(oyente);
+    }
+
+    private void agregartips() {
+      bAceptar.setToolTipText("Clic aquí para guardar la conexión");
+      bCancelar.setToolTipText("Regresar a la ventana de conexiones");
+      bPrueba.setToolTipText("Clic aqui para porbar si los datos son reconocidos por MYSQL");
+      tNombreConexion.setToolTipText("Escribe el nombre con el que reconocerás esta conexion");
+      tHost.setToolTipText("Escribe la dirección del servidor MySQL");
+      tPuerto.setToolTipText("Escribe el puerto de conexión");
+      tUsuario.setToolTipText("Escribe el nombre del usuario agregado a MySQL");
+      tpContrasenia.setToolTipText("Escribe la contraseña del usuario");
+           
     }
 }

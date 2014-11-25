@@ -110,6 +110,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         this.add(content);
         
         addEventos();
+        aagregartips();
     }
 
     /**
@@ -207,6 +208,10 @@ public ArrayList <String> obtenerColumnas(String tabla, String address){
 //    public JComboBox getOperacion() {
 //        return operacion;
 //    }
+
+    private void aagregartips() {
+     run.setToolTipText("Ejecutar Consulta");
+    }
 
    
     
