@@ -13,11 +13,6 @@ localhost
 3306
 root
 root
-<<<<<<< Updated upstream
-probarconexion
-127.0.0.1
-3306
-luis
 FundBD
 127.0.0.1
 3306

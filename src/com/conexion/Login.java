@@ -5,7 +5,6 @@
 package com.conexion;
 
 import java.awt.GridLayout;
-import static javax.security.auth.callback.ConfirmationCallback.OK;
 import javax.swing.*;
 
 /**
@@ -67,6 +66,8 @@ public class Login extends JFrame {  //login es un frame = ventana
         this.setAlwaysOnTop(true);
         this.add(pSur, "South");
         this.add(login, "Center");
+        
+        agregartips();
 
     }
     /**
@@ -79,7 +80,11 @@ public class Login extends JFrame {  //login es un frame = ventana
         bCancelar.addActionListener(o);
         tPass.addKeyListener(o);
     }
-
+    
+    private void agregartips() {
+      bAceptar.setToolTipText("Clic aquí para entrar a la cuenta de conexion");
+      bCancelar.setToolTipText("Clic aquí para regresar a la ventana de conexiones");
+    }
     
     //GETTERS AND SETTERS ---------------------------------------------------------------------------------
     public JLabel getlUsuario() {
@@ -97,5 +102,7 @@ public class Login extends JFrame {  //login es un frame = ventana
     public void settPass(JPasswordField tPass) {
         this.tPass = tPass;
     }
+
+    
 
 }
