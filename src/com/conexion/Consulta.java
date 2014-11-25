@@ -1,6 +1,7 @@
 package com.conexion;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +29,8 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     //Variables de clase 
 
     private OyenteConexion oyente;
-    private JButton run = new JButton("Ejecutar");
+    private JButton run;
+    private JButton reload;
 //    private String[] combo =new String[]{"Actualizacion","Seleccion"};
 //    private JComboBox operacion=new JComboBox(combo);
     private JMenuItem nuevo;
@@ -37,7 +39,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private JMenuItem guardarComo;
     private JMenuItem salir;
     private JTextArea taConsulta;
+    private JPanel content;
+    private JScrollPane ar;
     private JTree arbol = null;
+    
 
     /**
      * Incializa la ventana agregando sus componentes , ademas llama al metodo
@@ -62,6 +67,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      * @param void
      */
     private void addComponentes() {
+        run = new JButton("Ejecutar");
+        reload = new JButton("");
+        reload.setIcon(new ImageIcon("src/icon/reload.png"));
+        
         JMenuBar menu = new JMenuBar();
         nuevo = new JMenuItem("Nuevo");
         abrir = new JMenuItem("Abrir");
@@ -81,11 +90,12 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         menu.add(archivo);
 
         arbol = crearArbol();
-        JScrollPane ar = new JScrollPane(arbol);
+        ar = new JScrollPane(arbol);
         ar.setPreferredSize(new Dimension(185, 385));
 
         JPanel pNorte = new JPanel();
         JPanel pSur = new JPanel();
+        pSur.setLayout(new BorderLayout());
 //        JPanel pEste = new JPanel();
 
 //        pEste.add(ar);
@@ -93,11 +103,18 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         JScrollPane despConsulta = new JScrollPane(taConsulta);
 //        pSur.add(new JLabel("Tipo de operación: "));
 //        pSur.add(operacion);
-        pSur.add(run);
-        pSur.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
-       
+//        pSur.add(run);
+//        pSur.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
+        JPanel pSubSur = new JPanel();
+        JPanel pSubSur2 = new JPanel();
         
-        JPanel content = new JPanel();
+        pSubSur.add(reload);
+        pSubSur2.add(run);
+        
+        pSur.add(pSubSur, "West");
+        pSur.add(pSubSur2, "Center");
+       
+        content = new JPanel();
         content.setLayout(new BorderLayout());
         content.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
         
@@ -121,6 +138,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public void addEventos() {
         nuevo.addActionListener(oyente);
         run.addActionListener(oyente);
+        reload.addActionListener(oyente);
         abrir.addActionListener(oyente);
         guardar.addActionListener(oyente);
         guardarComo.addActionListener(oyente);
@@ -130,7 +148,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         taConsulta.addKeyListener(oyente);
     }
 
-    private JTree crearArbol() {
+    public JTree crearArbol() {
         JTree arbol;
         DefaultMutableTreeNode conexion = new DefaultMutableTreeNode("Bases de datos");
         DefaultTreeModel modelo = new DefaultTreeModel(conexion);
@@ -177,6 +195,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
             }
 
         }
+        arbol.expandRow(0);
         return arbol;
     }
 
@@ -211,9 +230,19 @@ public ArrayList <String> obtenerColumnas(String tabla, String address){
 
     private void aagregartips() {
      run.setToolTipText("Ejecutar Consulta");
+     reload.setToolTipText("Actualizar lista de bases de datos");
     }
 
-   
-    
+    public void setAr(JScrollPane ar) {
+        this.ar = ar;
+    }
+
+    public void setArbol(JTree arbol) {
+        this.arbol = arbol;
+    }
+
+    public JPanel getContent() {
+        return content;
+    }
 
 }

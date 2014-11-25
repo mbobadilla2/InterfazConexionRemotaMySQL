@@ -5,13 +5,12 @@
  */
 package com.conexion;
 
+import java.awt.Dimension;
 import java.awt.IllegalComponentStateException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 
 /**
  *
@@ -49,6 +50,11 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         String etiq = ae.getActionCommand();
 
         switch (etiq) {
+            // El botón con las flechas de recarga no tiene etiqueta...
+            case "":
+                recargarArbol();
+                
+                break;
             case "Aceptar":
 
                 if (validardatos(nc.tNombreConexion.getText(), nc.tPuerto.getText(), nc.tHost.getText(),
@@ -278,6 +284,18 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
     }
 
+    public void recargarArbol(){
+        JTree arbolito = consultas.crearArbol();
+        consultas.setArbol(arbolito);
+        JScrollPane scrollito = new JScrollPane(arbolito);
+        scrollito.setPreferredSize(new Dimension(185, 385));
+        consultas.setAr(scrollito);
+        consultas.getContent().remove(3);
+
+        consultas.getContent().add(scrollito, "West");
+        consultas.getContent().updateUI();    
+    }
+    
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
         int cont = 0;
         //INVESTIGAR COMO VALIDAR EL DOMINIO Y EL HOST
