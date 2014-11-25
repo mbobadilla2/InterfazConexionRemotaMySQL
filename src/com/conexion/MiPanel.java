@@ -75,7 +75,6 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         etiquetasPaneles.add("Contraseña: ");
 
         pNorte.add(bAgregarConexion); //agrego el boton  agregar conexion a el panel norte 
-
         for (String string : conexionesArchivo) {     //cuenta las lineas del archivo
             contador++;
         }
