@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -31,6 +32,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private MiOyente oyente;
     private MiPanel panel;
     private NuevaConexion nc;
+    private Modificaciones m;
     private ArrayList<PanelConexion> conx;
     protected PanelConexion p; //conexion actual
     private Consulta consultas = null;
@@ -40,6 +42,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private TablaConsulta tc;
     private int[] teclasPresionadas = new int[2];
     private boolean combinacionTeclas = false;
+    private Atributos a;
 
     public OyenteConexion(MiOyente oyente) {
         this.oyente = oyente;
@@ -52,8 +55,89 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         switch (etiq) {
             // El botón con las flechas de recarga no tiene etiqueta...
             case "":
-                recargarArbol();
+                if (ae.getSource() == consultas.getReload()) {
+                    System.out.println("arbol");
+                    recargarArbol();
+                } else if (ae.getSource() == consultas.getAgregarColumna()) {
+                    System.out.println("AgregarColumna");
+                } else if (ae.getSource() == consultas.getAgregarFila()) {
+                    System.out.println("agregarfila");
+
+                } else if (ae.getSource() == consultas.getAgregarTabla()) {
+                    m = new Modificaciones(con.getNombresBD(), con.getNombresTablas(), this);
+                    System.out.println("agregartabla");
+                } else if (ae.getSource() == consultas.getAgregarbd()) {
+
+                    String nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la nueva base de datos", "");
+                    try {
+                        con.getStament().executeUpdate("CREATE DATABASE " + nombrebd);
+                        JOptionPane.showMessageDialog(consultas, "Base de datos creada con exito!");
+                        recargarArbol();
+
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(consultas, e);
+                    }
+
+                }
+
+                break;
+            case "Agregar Columnas":
+                int contadordellaves = 0;
+                int seleccionado=0;
+                int cont=0;
                 
+                for (JCheckBox keys : a.getPk()) {
+                    if (keys.isSelected()) {
+                        seleccionado=cont;
+                        contadordellaves++;
+                    }
+                    cont++;
+
+                }
+                if (contadordellaves == 0) {
+
+                    JOptionPane.showMessageDialog(a, "Seleccione al menos unallave primaria ");
+
+                } else if (contadordellaves > 1) {
+                    JOptionPane.showMessageDialog(a, "Solo puedes agregar una llave primaria");
+
+                } else {
+
+                    String agregartablaquery;
+                    agregartablaquery = "CREATE TABLE " + m.getTt().getText() + " (";
+                    for (int i = 0; i < a.getNumero(); i++) {
+                        if (a.getNombres().get(i).getText().equals("")) {
+                        } else {
+                            agregartablaquery = agregartablaquery + " " + a.getNombres().get(i).getText() + " " + a.getAtipos().get(i).getSelectedItem() + " " + ((a.getNulos().get(i).isSelected()) ? "NOT NULL" : "NULL") + " "
+                                    + ((a.getAutos().get(i).isSelected()) ? "AUTO_INCREMENT" : "");
+                        }
+                        if ((i + 1) != a.getNumero()) {
+                            agregartablaquery = agregartablaquery + ",";
+                        }
+
+                    }
+                    agregartablaquery = agregartablaquery +",PRIMARY KEY("+a.getNombres().get(seleccionado).getText()+ "));";
+                    try {
+                        con.getStament().executeQuery("USE "+m.getBasesDatos().getSelectedItem());
+                        con.getStament().executeUpdate(agregartablaquery);
+                        System.out.println("EXITO AL AGREGAR ");
+                        m.setVisible(false);
+                        a.setVisible(false);
+                        //falta limpiar los textfield de a
+                    } catch (Exception e) {
+                    }
+                }
+                break;
+            case "Agregar":
+                if (m.getTt().getText().equals("")) {
+                    JOptionPane.showMessageDialog(m, "Agrega nombre de la tabla");
+
+                } else {
+                    int numero = Integer.parseInt(JOptionPane.showInputDialog(m, "Numero de Columnas a agregar", "1"));
+                    a = new Atributos(numero, this);
+
+                }
+
                 break;
             case "Aceptar":
 
@@ -226,65 +310,64 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         }
     }
 
-   private void ejecutarConsulta() throws IllegalComponentStateException{
+    private void ejecutarConsulta() throws IllegalComponentStateException {
         String query = consultas.getTaConsulta().getText();
         String queries[];
         String consulta;
-        
+
         boolean use = false;
-        
+
         // Esto es para la combinacion de teclas en el área de consultas...
         combinacionTeclas = false;
 
-                if ("".equals(query)) {
-                    JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
+        if ("".equals(query)) {
+            JOptionPane.showMessageDialog(null, "Área de consulta vacía", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // Si el string empieza con use, asuminos que se especifica base de datos
+            // si no, se hace consulta sin especificarla con use...
+            if (query.toUpperCase().trim().startsWith("USE")) {
+                use = true;
+            }
+
+            try {
+
+                if (use) {
+                    queries = query.trim().split(";");
+                    con.getStament().executeQuery(queries[0]);
+
+                    consulta = queries[1];
                 } else {
-                    // Si el string empieza con use, asuminos que se especifica base de datos
-                    // si no, se hace consulta sin especificarla con use...
-                    if(query.toUpperCase().trim().startsWith("USE")){
-                        use = true;
-                    }
-                    
-                    try {
-                        
-                        if(use){
-                            queries = query.trim().split(";");
-                            con.getStament().executeQuery(queries[0]);
-                            System.out.println(queries[0]+ " " +queries[1] + " Con use");
-                            consulta = queries[1];
-                        }else{
-                            consulta = query.trim();
-                        }
-
-                        // Tipo 0 = Actualización
-                        // Tipo 1 = Selección
-                        
-                        int tipoCons;
-                        
-                        if(con.getStament().execute(consulta)){
-                            tipoCons = 1;
-                        }else{
-                            tipoCons = 0;
-                        }
-                        
-                        System.out.println("Tipo cons " + tipoCons);
-                        if(tipoCons==0)
-                            JOptionPane.showMessageDialog(null, "Consulta realizada con exito", "Exito", JOptionPane.CLOSED_OPTION);
-//                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
-                        tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
-
-                    } catch(SQLException ex) {
-//                      Logger.getLogger(OyenteConexion.class.getName()).log(Level.SEVERE, null, ex);
-                        //System.out.println(ex);
-                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
-                    } catch(IndexOutOfBoundsException ie){
-                        JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
-                        System.out.println("Te saliste!");
-                    }
+                    consulta = query.trim();
                 }
+
+                // Tipo 0 = Actualización
+                // Tipo 1 = Selección
+                int tipoCons;
+
+                if (con.getStament().execute(consulta)) {
+                    tipoCons = 1;
+                } else {
+                    tipoCons = 0;
+                }
+
+                System.out.println("Tipo cons " + tipoCons);
+                if (tipoCons == 0) {
+                    JOptionPane.showMessageDialog(null, "Consulta realizada con exito", "Exito", JOptionPane.CLOSED_OPTION);
+                }
+//                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
+                tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
+
+            } catch (SQLException ex) {
+//                    
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error en la instrucción SQL", JOptionPane.ERROR_MESSAGE);
+            } catch (IndexOutOfBoundsException ie) {
+                JOptionPane.showMessageDialog(null, "No se seleccionó base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Te saliste!");
+            }
+        }
     }
 
-    public void recargarArbol(){
+    public void recargarArbol() {
         JTree arbolito = consultas.crearArbol();
         consultas.setArbol(arbolito);
         JScrollPane scrollito = new JScrollPane(arbolito);
@@ -293,9 +376,9 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         consultas.getContent().remove(3);
 
         consultas.getContent().add(scrollito, "West");
-        consultas.getContent().updateUI();    
+        consultas.getContent().updateUI();
     }
-    
+
     private boolean validardatos(String nombcon, String puerto, String host, String usuario, char[] pass) {
         int cont = 0;
         //INVESTIGAR COMO VALIDAR EL DOMINIO Y EL HOST

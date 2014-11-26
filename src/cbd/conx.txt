@@ -28,3 +28,8 @@ conexion
 3306
 root
 root
+jij
+127.0.0.1
+3306
+luis
+1234

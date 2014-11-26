@@ -3,6 +3,8 @@ package com.conexion;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,8 +33,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private OyenteConexion oyente;
     private JButton run;
     private JButton reload;
-//    private String[] combo =new String[]{"Actualizacion","Seleccion"};
-//    private JComboBox operacion=new JComboBox(combo);
+    private JButton agregarbd;
+    private JButton agregarTabla;
+    private JButton agregarFila;
+    private JButton agregarColumna;
     private JMenuItem nuevo;
     private JMenuItem abrir;
     private JMenuItem guardar;
@@ -42,7 +46,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private JPanel content;
     private JScrollPane ar;
     private JTree arbol = null;
-    
 
     /**
      * Incializa la ventana agregando sus componentes , ademas llama al metodo
@@ -52,7 +55,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      * que los necesiten
      */
     public Consulta(OyenteConexion oyente) {
-        this.setTitle("Conexion con usuario :  " + oyente.getCon().getUser()+"   en   " + oyente.getCon().getUrl()); 
+        this.setTitle("Conexion con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());        
         this.oyente = oyente;
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
@@ -68,16 +71,29 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      */
     private void addComponentes() {
         run = new JButton("Ejecutar");
+        agregarbd = new JButton("");
+        agregarbd.setIcon(new ImageIcon("src/icon/add_database.png"));
+        agregarTabla = new JButton("");
+        agregarTabla.setIcon(new ImageIcon("src/icon/table_add.png"));
+        agregarFila = new JButton("");
+        agregarFila.setIcon(new ImageIcon("src/icon/add_row.png"));
+        agregarColumna = new JButton("");
+        agregarColumna.setIcon(new ImageIcon("src/icon/add_column.png"));
         reload = new JButton("");
         reload.setIcon(new ImageIcon("src/icon/reload.png"));
+        agregarColumna.setName("agregarcolumna");
+        agregarFila.setName("agregarfila");
+        agregarTabla.setName("agregatabla");
+        agregarbd.setName("agregarbd");
         
         JMenuBar menu = new JMenuBar();
         nuevo = new JMenuItem("Nuevo");
         abrir = new JMenuItem("Abrir");
+        
         guardar = new JMenuItem("Guardar");
         guardarComo = new JMenuItem("Guardar como...");
         salir = new JMenuItem("Salir");
-
+        
         JMenu archivo = new JMenu("Archivo");
         archivo.add(nuevo);
         archivo.add(abrir);
@@ -86,25 +102,26 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         archivo.add(guardarComo);
         archivo.add(new JSeparator());
         archivo.add(salir);
-
+        
         menu.add(archivo);
-
+        
         arbol = crearArbol();
         ar = new JScrollPane(arbol);
         ar.setPreferredSize(new Dimension(185, 385));
-
+        
         JPanel pNorte = new JPanel();
         JPanel pSur = new JPanel();
         pSur.setLayout(new BorderLayout());
-//        JPanel pEste = new JPanel();
-
-//        pEste.add(ar);
+        JPanel pOeste = new JPanel();
+        pOeste.setLayout(new GridLayout(4, 1));
+        
+        pOeste.add(agregarbd);
+        pOeste.add(agregarTabla);
+        pOeste.add(agregarFila);
+        pOeste.add(agregarColumna);
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
-//        pSur.add(new JLabel("Tipo de operación: "));
-//        pSur.add(operacion);
-//        pSur.add(run);
-//        pSur.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
+        
         JPanel pSubSur = new JPanel();
         JPanel pSubSur2 = new JPanel();
         
@@ -113,7 +130,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         
         pSur.add(pSubSur, "West");
         pSur.add(pSubSur2, "Center");
-       
+        
         content = new JPanel();
         content.setLayout(new BorderLayout());
         content.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
@@ -123,7 +140,8 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         content.add(despConsulta, "Center");
         content.add(pSur, "South");
         content.add(ar, "West");
-
+        content.add(pOeste, "East");
+        
         this.add(content);
         
         addEventos();
@@ -143,24 +161,29 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         guardar.addActionListener(oyente);
         guardarComo.addActionListener(oyente);
         salir.addActionListener(oyente);
+        agregarColumna.addActionListener(oyente);
+        agregarFila.addActionListener(oyente);
+        agregarTabla.addActionListener(oyente);
+        agregarbd.addActionListener(oyente);
+        
         
         taConsulta.setFocusable(true);
         taConsulta.addKeyListener(oyente);
     }
-
+    
     public JTree crearArbol() {
         JTree arbol;
         DefaultMutableTreeNode conexion = new DefaultMutableTreeNode("Bases de datos");
         DefaultTreeModel modelo = new DefaultTreeModel(conexion);
         arbol = new JTree(modelo);
         
-        DefaultTreeCellRenderer render=(DefaultTreeCellRenderer)arbol.getCellRenderer();
-       
+        DefaultTreeCellRenderer render = (DefaultTreeCellRenderer) arbol.getCellRenderer();
+        
         render.setLeafIcon(new ImageIcon("src/icon/table.png"));
         render.setClosedIcon(new ImageIcon("src/icon/db.png"));
         render.setOpenIcon(new ImageIcon("src/icon/dbmain.png"));
         int cuenta = 0;
-
+        
         for (String a : oyente.getCon().getNombresBD()) {
             DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(a);
             //System.out.println(a);
@@ -168,81 +191,142 @@ public class Consulta extends JFrame { //clase consulta es una ventana
             try {
                 int cuentaTabla = 0;
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText()+"/"+a,
-                oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
+                Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + a,
+                        oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
                 Statement sentencia = c.createStatement();
                 ResultSet rs = sentencia.executeQuery("show tables");
                 while (rs.next()) {
-                      
-                       for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
-                            //System.out.print(rs.getString(x) + "\t");
-                            DefaultMutableTreeNode datoTable = new DefaultMutableTreeNode(rs.getString(x));
-                            modelo.insertNodeInto(datoTable, nombreBD, cuentaTabla);
-                            ArrayList <String> columnas = obtenerColumnas(rs.getString(x), a);
-                            int cuentaColumna = 0;
-                            for (String col : columnas) {
-                                DefaultMutableTreeNode datoColumna = new DefaultMutableTreeNode(col);
-                                modelo.insertNodeInto(datoColumna, datoTable, cuentaColumna);
-                                cuentaColumna++;
-                            }
-
-                            cuentaTabla++;
-
-                       }
+                    
+                    for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
+                        //System.out.print(rs.getString(x) + "\t");
+                        DefaultMutableTreeNode datoTable = new DefaultMutableTreeNode(rs.getString(x));
+                        modelo.insertNodeInto(datoTable, nombreBD, cuentaTabla);
+                        ArrayList<String> columnas = obtenerColumnas(rs.getString(x), a);
+                        int cuentaColumna = 0;
+                        for (String col : columnas) {
+                            DefaultMutableTreeNode datoColumna = new DefaultMutableTreeNode(col);
+                            modelo.insertNodeInto(datoColumna, datoTable, cuentaColumna);
+                            cuentaColumna++;
+                        }
+                        
+                        cuentaTabla++;
+                        
+                    }
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
                 System.out.println("Error " + e);
             }
-
+            
         }
         arbol.expandRow(0);
         return arbol;
     }
-
-public ArrayList <String> obtenerColumnas(String tabla, String address){
-        ArrayList <String> columnas = new ArrayList();
-        try{
+    
+    public ArrayList<String> obtenerColumnas(String tabla, String address) {
+        ArrayList<String> columnas = new ArrayList();
+        try {
             
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText()+"/"+address,
-            oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
+            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + address,
+                    oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
             Statement sentencia = c.createStatement();
-            ResultSet rs = sentencia.executeQuery("select * from "+tabla);
+            ResultSet rs = sentencia.executeQuery("select * from " + tabla);
             for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
                 columnas.add(rs.getMetaData().getColumnName(x));
             }
-        }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e){}
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+        }
         return columnas;
         
     }
+
     //GETTERS AND SETTERS ----------------------------------------------------------------------------------------------------
+
     public JTextArea getTaConsulta() {
         return taConsulta;
     }
-
+    
     public void setTaConsulta(JTextArea taConsulta) {
         this.taConsulta = taConsulta;
     }
-//
-//    public JComboBox getOperacion() {
-//        return operacion;
-//    }
 
-    private void aagregartips() {
-     run.setToolTipText("Ejecutar Consulta");
-     reload.setToolTipText("Actualizar lista de bases de datos");
+    public OyenteConexion getOyente() {
+        return oyente;
     }
 
+    public JButton getRun() {
+        return run;
+    }
+
+    public JButton getReload() {
+        return reload;
+    }
+
+    public JButton getAgregarbd() {
+        return agregarbd;
+    }
+
+    public JButton getAgregarTabla() {
+        return agregarTabla;
+    }
+
+    public JButton getAgregarFila() {
+        return agregarFila;
+    }
+
+    public JButton getAgregarColumna() {
+        return agregarColumna;
+    }
+
+    public JMenuItem getNuevo() {
+        return nuevo;
+    }
+
+    public JMenuItem getAbrir() {
+        return abrir;
+    }
+
+    public JMenuItem getGuardar() {
+        return guardar;
+    }
+
+    public JMenuItem getGuardarComo() {
+        return guardarComo;
+    }
+
+    public JMenuItem getSalir() {
+        return salir;
+    }
+
+    public JScrollPane getAr() {
+        return ar;
+    }
+
+    public JTree getArbol() {
+        return arbol;
+    }
+    
+
+    private void aagregartips() {
+        run.setToolTipText("Ejecutar Consulta");
+        reload.setToolTipText("Actualizar lista de bases de datos");
+        agregarColumna.setToolTipText("Agrega una nueva columna a una tabla");
+        agregarFila.setToolTipText("Agrega una nueva fila de datos a una tabla");
+        agregarTabla.setToolTipText("Agrega una nueva tabla una base de datos");
+        agregarbd.setToolTipText("Crea una nueva base de datos");
+        
+    }
+    
     public void setAr(JScrollPane ar) {
         this.ar = ar;
     }
-
+    
     public void setArbol(JTree arbol) {
         this.arbol = arbol;
     }
-
+    
     public JPanel getContent() {
         return content;
     }
-
+    
 }
