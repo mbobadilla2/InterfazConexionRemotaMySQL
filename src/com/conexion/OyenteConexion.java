@@ -173,6 +173,8 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 
                     conx.add(p);
                     panel.agregarConexion(p);
+                    
+                    oyente.habilitarBotones();
 
                     try {
                         Archivo.escribirConexiones(conx, "src/cbd/conx.txt");
