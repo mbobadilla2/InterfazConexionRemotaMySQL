@@ -79,6 +79,7 @@ public class Login extends JFrame {  //login es un frame = ventana
         bAceptar.setSelected(true);
         bCancelar.addActionListener(o);
         tPass.addKeyListener(o);
+        this.addWindowListener(o);
     }
     
     private void agregartips() {

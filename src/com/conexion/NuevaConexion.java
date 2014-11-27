@@ -46,7 +46,7 @@ public class NuevaConexion extends JFrame {
         this.setSize(610, 200);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(panel);
         this.addComponentes();
         this.setVisible(true);
@@ -87,6 +87,7 @@ public class NuevaConexion extends JFrame {
         bAceptar.addActionListener(oyente);
         bCancelar.addActionListener(oyente);
         bPrueba.addActionListener(oyente);
+        this.addWindowListener(oyente);
     }
 
     private void agregartips() {

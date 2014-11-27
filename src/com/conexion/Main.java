@@ -48,8 +48,8 @@ public class Main {         //Clase principal
         ventanaPrincipal.setResizable(false); //Restringimos que la ventana principal pueda modificar su tamaño
         ventanaPrincipal.add(panel);        //Agregamos el panel a la ventana 
         ventanaPrincipal.setVisible(true);  //Ponemos visible a la ventana principal
-        ventanaPrincipal.setDefaultCloseOperation(3);   //Definimos el comportamiento de la ventana principal cuando le apretamos el boton cerrar
-
+        ventanaPrincipal.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);   //Definimos el comportamiento de la ventana principal cuando le apretamos el boton cerrar
+        ventanaPrincipal.addWindowListener(oyenteConexion);
     }
     
     public static void setLookAndFeel(){

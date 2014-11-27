@@ -24,6 +24,8 @@ public class MiOyente extends MouseAdapter implements ActionListener {
     private boolean loginActivo = false;//comprueba que no hay otra ventana de login
     private NuevaConexion nc;
     private Login login;
+    private boolean ncActivo = false;
+    private boolean ventanaActiva = false;
 
     // Todos los botones;
     @Override
@@ -33,11 +35,15 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         switch (etiq) {
 
             case "Agregar Conexion":
-                nc = new NuevaConexion();
-                nc.addEventos(oc);
-                oc.setConx(conexiones);
-                oc.setPanel(panel);
-                oc.setNc(nc);
+                if(!ventanaActiva){
+                    nc = new NuevaConexion();
+                    nc.addEventos(oc);
+                    oc.setConx(conexiones);
+                    oc.setPanel(panel);
+                    oc.setNc(nc);
+                    deshabilitarBotones();
+                    ncActivo = true;
+                }
                 break;
 
             case "Borrar":
@@ -57,6 +63,16 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         }
     }
 
+    public void deshabilitarBotones(){
+        panel.getbAgregarConexion().setEnabled(false);
+        ventanaActiva = true;
+    }
+    
+    public void habilitarBotones(){
+        panel.getbAgregarConexion().setEnabled(true);
+        ventanaActiva = false;
+    }
+    
     // Eventos para las conexiones guardadas;
     @Override
     public void mouseClicked(MouseEvent me) throws IllegalComponentStateException{
@@ -68,8 +84,9 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         this.login = new Login();
         loginActivo = login.isVisible();
 
-        if (me.getButton() == 1 && !loginActivo) {
+        if (me.getButton() == 1 && !loginActivo && !ventanaActiva) {
 //            log = new Login(conxActual.getDatosConx().get(3).getText());
+            deshabilitarBotones();
             login.getlUsuario().setText(conxActual.getInfoConexion().get(3).getText());
 
             login.setVisible(true);
@@ -78,12 +95,16 @@ public class MiOyente extends MouseAdapter implements ActionListener {
             login.addEventos(oc);
 
             loginActivo = true;
+            
 
             // Si se oprimió click derecho en un panel, se muestra el menú emergente...
-        } else if (me.getButton() == 3) {
+        } else if (me.getButton() == 3 && !ventanaActiva) {
             //System.out.println("Botón derecho!");
+            
+            // También deshabilitar botones cuando se escoja modificar conexion...
+            
             mostrarMenuEmergente(me);
-        } else if (loginActivo = true) {
+        } else if (loginActivo  || ventanaActiva) {
 
             //Hacer que la ventana parpadee
         }
@@ -150,6 +171,14 @@ public class MiOyente extends MouseAdapter implements ActionListener {
         return loginActivo;
     }
 
+    public boolean isVentanaActiva() {
+        return ventanaActiva;
+    }
+
+    public void setVentanaActiva(boolean ventanaActiva) {
+        this.ventanaActiva = ventanaActiva;
+    }
+    
     public void setLoginActivo(boolean loginActivo) {
         this.loginActivo = loginActivo;
     }

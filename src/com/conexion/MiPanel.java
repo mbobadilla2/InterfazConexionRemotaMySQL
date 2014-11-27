@@ -272,6 +272,12 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         this.conexionesArchivo = ConexionesArchivo;
     }
 
-   
+    public JButton getbAgregarConexion() {
+        return bAgregarConexion;
+    }
+
+    public JScrollPane getScroll() {
+        return scroll;
+    }
 
 }

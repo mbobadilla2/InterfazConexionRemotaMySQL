@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -27,7 +30,7 @@ import javax.swing.JTree;
  *
  * @author Jose Ruben
  */
-public class OyenteConexion extends KeyAdapter implements ActionListener {
+public class OyenteConexion extends KeyAdapter implements ActionListener, WindowListener {
 
     private MiOyente oyente;
     private MiPanel panel;
@@ -36,12 +39,14 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     private ArrayList<PanelConexion> conx;
     protected PanelConexion p; //conexion actual
     private Consulta consultas = null;
+    private ArrayList<TablaConsulta> arrayConsultas = new ArrayList<>();
     private ConexionSQL con;
     private ConexionSQL c;
     private Login l;
     private TablaConsulta tc;
     private int[] teclasPresionadas = new int[2];
     private boolean combinacionTeclas = false;
+    private int tipoCombinacion = -1;
     private Atributos a;
 
     public OyenteConexion(MiOyente oyente) {
@@ -57,7 +62,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
             case "":
                 if (ae.getSource() == consultas.getReload()) {
                     System.out.println("arbol");
-                    recargarArbol();
+//                    recargarArbol();
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
                     System.out.println("AgregarColumna");
                 } else if (ae.getSource() == consultas.getAgregarFila()) {
@@ -72,7 +77,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     try {
                         con.getStament().executeUpdate("CREATE DATABASE " + nombrebd);
                         JOptionPane.showMessageDialog(consultas, "Base de datos creada con exito!");
-                        recargarArbol();
+//                        recargarArbol();
 
                     } catch (SQLException e) {
                         JOptionPane.showMessageDialog(consultas, e);
@@ -81,6 +86,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
+                
             case "Agregar Columnas":
                 int contadordellaves = 0;
                 int seleccionado=0;
@@ -128,6 +134,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     }
                 }
                 break;
+                
             case "Agregar":
                 if (m.getTt().getText().equals("")) {
                     JOptionPane.showMessageDialog(m, "Agrega nombre de la tabla");
@@ -139,6 +146,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
 
                 break;
+                
             case "Aceptar":
 
                 if (validardatos(nc.tNombreConexion.getText(), nc.tPuerto.getText(), nc.tHost.getText(),
@@ -175,33 +183,34 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     borrarCeldas();
 
                 } else {
-                    JOptionPane.showMessageDialog(nc, "Los datos introducidos son incorrectos");
+                    JOptionPane.showMessageDialog(nc, "Debes llenar todos los campos");
                 }
 
                 break;
 
             case "Cancelar":
-                int opcion = JOptionPane.showConfirmDialog(panel, "¿Seguro que quieres eliminar la conexión?", "Eliminar conexión", JOptionPane.OK_CANCEL_OPTION);
-
-                if (opcion == JOptionPane.OK_OPTION) {
-                    nc.setVisible(false);
-                    borrarCeldas();
-
-                }
+                cancelarNuevaConexion();
                 break;
 
             case "Probar Conexion":
                 //Testea conexion 
-                c = new ConexionSQL(nc.tUsuario.getText(),
-                        nc.tPuerto.getText(),
-                        nc.tHost.getText(), nc.tpContrasenia.getText());
+                if (validardatos(nc.tNombreConexion.getText(), nc.tPuerto.getText(), nc.tHost.getText(),
+                        nc.tUsuario.getText(), nc.tpContrasenia.getPassword())) {
+                    
+                    c = new ConexionSQL(nc.tUsuario.getText(),
+                            nc.tPuerto.getText(),
+                            nc.tHost.getText(), nc.tpContrasenia.getText());
 
-                if (c.probarConexion()) {
-                    JOptionPane.showMessageDialog(panel, "Los parámetros de la conexión son correctos");
-                    c.cerrarConexion();
+                    if (c.probarConexion()) {
+                        JOptionPane.showMessageDialog(panel, "Los parámetros de la conexión son correctos");
+                        c.cerrarConexion();
 
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                }else{
+                        JOptionPane.showMessageDialog(panel, "Debes llenar todos los campos");
                 }
                 break;
 
@@ -217,8 +226,10 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
                         consultas = new Consulta(this);
 
-                        l.setVisible(false);
-
+//                        l.setVisible(false);
+                        l.dispose();
+                        oyente.deshabilitarBotones();
+                        
                     } else {
                         JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                         l.tPass.setText("");
@@ -230,8 +241,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 break;
 
             case "Regresar":
-                l.setVisible(false);
-                l.tPass.setText("");
+                cerrarLogin();
                 break;
 
             case "Ejecutar":
@@ -281,15 +291,8 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 }
                 break;
 
-            // Deshabilitado temporalmente...
             case "Salir":
-                int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
-                        "Advertencia", JOptionPane.OK_CANCEL_OPTION);
-
-                if (eleccion == JOptionPane.OK_OPTION) {
-                    consultas = null;
-                    con.cerrarConexion();
-                }
+                cerrarConsultas();
 
                 break;
 
@@ -355,7 +358,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Consulta realizada con exito", "Exito", JOptionPane.CLOSED_OPTION);
                 }
 //                        tc = new TablaConsulta(con.getStament(), queries[1], consultas.getOperacion().getSelectedIndex());
-                tc = new TablaConsulta(con.getStament(), consulta, tipoCons);
+                tc = new TablaConsulta(con.getStament(), consulta, tipoCons, this);
 
             } catch (SQLException ex) {
 //                    
@@ -407,6 +410,36 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         nc.tpContrasenia.setText("");
     }
 
+    public void cancelarNuevaConexion(){
+        int opcion = JOptionPane.showConfirmDialog(panel, "Se eliminará la nueva conexión", "Cancelar nueva conexión", JOptionPane.OK_CANCEL_OPTION);
+
+            if (opcion == JOptionPane.OK_OPTION) {
+                nc.dispose();
+                borrarCeldas();
+                oyente.habilitarBotones();
+            }
+    }
+    
+    public void cerrarLogin(){
+        l.dispose();
+        oyente.habilitarBotones();
+    }
+    
+    public void cerrarConsultas(){
+        int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
+                        "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+
+        if (eleccion == JOptionPane.OK_OPTION) {
+            for(TablaConsulta tablaCons: arrayConsultas){
+                tablaCons.dispose();
+            }
+            arrayConsultas = new ArrayList<>();
+            consultas.dispose();
+            con.cerrarConexion();
+            oyente.habilitarBotones();
+        }
+    }
+    
     private boolean validarcontrasenia(char[] password) {
         boolean isCorrect = true;
         char[] correctPassword = p.getInfoConexion().get(4).getText().toCharArray();
@@ -448,6 +481,20 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
                 JOptionPane.showMessageDialog(l, "Usuario no existe en Mysql", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                 l.tPass.setText("");
             }
+        } else if (e.getSource().equals(tc)) {
+
+            if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                teclasPresionadas[0] = e.getKeyCode();
+
+            } else if (e.getKeyCode() == KeyEvent.VK_W) {
+                teclasPresionadas[1] = e.getKeyCode();
+            }
+
+            if (teclasPresionadas[0] == KeyEvent.VK_CONTROL && teclasPresionadas[1] == KeyEvent.VK_W) {
+                combinacionTeclas = true;
+                tipoCombinacion = 2;
+            }
+            
         } else if (!l.isVisible() && consultas != null) {
 
             if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -459,6 +506,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
             if (teclasPresionadas[0] == KeyEvent.VK_SHIFT && teclasPresionadas[1] == KeyEvent.VK_ENTER) {
                 combinacionTeclas = true;
+                tipoCombinacion = 1;
             }
         }
     }
@@ -470,11 +518,21 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
 
         if (combinacionTeclas) {
             combinacionTeclas = false;
-            System.out.println("-----Control + Enter!");
-            ejecutarConsulta();
+            
+            if(tipoCombinacion == 1){   
+                System.out.println("-----Control + Enter! ");
+                ejecutarConsulta();
+                
+            }//else if(tipoCombinacion == 2){
+//                System.out.println("----- Control + W!");
+//                e.getComponent().setVisible(false);
+//            }
+            
+            tipoCombinacion = -1;
         }
 //        System.out.println("Teclas liberadas");
     }
+    
 
     public MiPanel getP() {
         return panel;
@@ -500,6 +558,10 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
         this.conx = conx;
     }
 
+    public ArrayList<TablaConsulta> getArrayConsultas() {
+        return arrayConsultas;
+    }
+
     public Login getL() {
         return l;
     }
@@ -519,4 +581,57 @@ public class OyenteConexion extends KeyAdapter implements ActionListener {
     public ConexionSQL getCon() {
         return con;
     }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        System.out.println("Vas a cerrar la ventana de nueva consulta!");
+        
+        // Si el evento proviene de un objeto de la clase de nc (NuevaConexion)...
+        if(e.getSource().getClass().isInstance(nc)){
+            cancelarNuevaConexion();
+            
+        // Si proviene de un objeto de la clase de l (Login)...
+        }else if(e.getSource().getClass().isInstance(l)){
+            cerrarLogin();
+            
+        // Si proviene de un objeto de la clase de consultas (Consulta)...
+        }else if(e.getSource().getClass().isInstance(consultas)){
+            cerrarConsultas();
+        
+        // Si proviene de un objeto JFrame (El principal)
+        }else if(e.getSource().getClass().isInstance(new JFrame())){
+            int opcion = JOptionPane.showConfirmDialog(null, "Se cerrará el programa", "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+        
+            if(opcion == JOptionPane.OK_OPTION){
+                System.exit(-1);
+            }
+        }
+        
+        
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
+
 }

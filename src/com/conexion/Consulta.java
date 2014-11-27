@@ -59,7 +59,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         this.oyente = oyente;
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addComponentes();
         this.setVisible(true);
     }
@@ -79,7 +79,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarFila.setIcon(new ImageIcon("src/icon/add_row.png"));
         agregarColumna = new JButton("");
         agregarColumna.setIcon(new ImageIcon("src/icon/add_column.png"));
-        reload = new JButton("");
+        reload = new JButton("Deshabilitado...");
         reload.setIcon(new ImageIcon("src/icon/reload.png"));
         agregarColumna.setName("agregarcolumna");
         agregarFila.setName("agregarfila");
@@ -169,6 +169,8 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         
         taConsulta.setFocusable(true);
         taConsulta.addKeyListener(oyente);
+        
+        this.addWindowListener(oyente);
     }
     
     public JTree crearArbol() {

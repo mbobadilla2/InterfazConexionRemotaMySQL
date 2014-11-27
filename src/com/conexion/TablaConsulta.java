@@ -37,7 +37,7 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
      * @see ConexionSQL
      *
      */
-    public TablaConsulta(Statement sentencia, String consulta, int tipo) {
+    public TablaConsulta(Statement sentencia, String consulta, int tipo, OyenteConexion oyenteC) {
         //de tipo 0 es actualizacion y 1 es consulta 
 
         super("Consulta");
@@ -83,8 +83,10 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
 
                     modelo.addRow(fila);
                 }
-
+                
+                this.addKeyListener(oyenteC);
                 this.setVisible(true);
+                oyenteC.getArrayConsultas().add(this);
 
             } catch (SQLException ex) {
             // Si hubo un error, se muestra el error y se elimina la tabla creada...
@@ -95,6 +97,8 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
 //                this.dispose();
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
             
+            } catch(NullPointerException npe){
+                System.out.println("No se agregó al array");
             }
         } 
 
