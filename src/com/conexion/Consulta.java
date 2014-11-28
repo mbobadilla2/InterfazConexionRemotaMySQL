@@ -149,7 +149,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         JPanel pSubSur = new JPanel();
         JPanel pSubSur2 = new JPanel();
 
-        pSubSur.add(reload);
+//        pSubSur.add(reload);
         pSubSur2.add(run);
 
         pSur.add(pSubSur, "West");
