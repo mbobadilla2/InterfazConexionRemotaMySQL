@@ -19,8 +19,8 @@ public class MenuEmergente extends JPopupMenu{
         eliminarConx    = new JMenuItem("Borrar");
         modificarConx   = new JMenuItem("Modificar...");
         
-//        this.add(modificarConx);
-//        this.add(new JSeparator());
+        this.add(modificarConx);
+        this.add(new JSeparator());
         this.add(eliminarConx);
     }
     

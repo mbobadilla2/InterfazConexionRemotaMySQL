@@ -37,10 +37,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private JButton agregarTabla;
     private JButton agregarFila;
     private JButton agregarColumna;
-    private JButton borrarbd;
-    private JButton borrarTabla;
-    private JButton borrarColumna;
-    private JButton borrarFila;
     private JMenuItem nuevo;
     private JMenuItem abrir;
     private JMenuItem guardar;
@@ -59,7 +55,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      * que los necesiten
      */
     public Consulta(OyenteConexion oyente) {
-        this.setTitle("Conexión con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());        
+        this.setTitle("Conexion con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());        
         this.oyente = oyente;
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
@@ -89,11 +85,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarFila.setName("agregarfila");
         agregarTabla.setName("agregatabla");
         agregarbd.setName("agregarbd");
-        
-        borrarbd = new JButton("bbd");
-        borrarTabla = new JButton("bt");
-        borrarColumna = new JButton("bc");
-        borrarFila = new JButton("bf");
         
         JMenuBar menu = new JMenuBar();
         nuevo = new JMenuItem("Nuevo");
@@ -130,17 +121,12 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         pOeste.add(agregarTabla);
         pOeste.add(agregarFila);
         pOeste.add(agregarColumna);
-        pOeste.add(new JSeparator());
-        pOeste.add(borrarbd);
-        pOeste.add(borrarTabla);
-        pOeste.add(borrarColumna);
-        pOeste.add(borrarFila);
         
         scrollOeste = new JScrollPane(pOeste);
-        scrollOeste.setPreferredSize(new Dimension(65, 385));
+        scrollOeste.setPreferredSize(new Dimension(55, 385));
 //        scrollOeste.setBorder(BorderFactory.createLineBorder(this.getBackground(), 5));
         scrollOeste.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollOeste.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollOeste.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
@@ -192,11 +178,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         
         taConsulta.setFocusable(true);
         taConsulta.addKeyListener(oyente);
-        
-        borrarbd.addActionListener(oyente);
-        borrarTabla.addActionListener(oyente);
-        borrarColumna.addActionListener(oyente);
-        borrarFila.addActionListener(oyente);
         
         this.addWindowListener(oyente);
     }
@@ -345,10 +326,6 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarTabla.setToolTipText("Agrega una nueva tabla una base de datos");
         agregarbd.setToolTipText("Crea una nueva base de datos");
         
-        borrarbd.setToolTipText("Elimina una base de datos");
-        borrarTabla.setToolTipText(("Elimina una tabla de una base de datos"));
-        borrarColumna.setToolTipText("Elimina una columna de una tabla");
-        borrarFila.setToolTipText("Elimina una fila de una tabla");
     }
     
     public void setAr(JScrollPane ar) {
@@ -362,22 +339,5 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public JPanel getContent() {
         return content;
     }
-
-    public JButton getBorrarbd() {
-        return borrarbd;
-    }
-
-    public JButton getBorrarTabla() {
-        return borrarTabla;
-    }
-
-    public JButton getBorrarColumna() {
-        return borrarColumna;
-    }
-
-    public JButton getBorrarFila() {
-        return borrarFila;
-    }
-    
     
 }
