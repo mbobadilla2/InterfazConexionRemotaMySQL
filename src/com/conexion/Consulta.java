@@ -195,62 +195,48 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         render.setOpenIcon(new ImageIcon("src/icon/dbmain.png"));
         int cuenta = 0;
         
-        for (String a : oyente.getCon().getNombresBD()) {
-            DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(a);
+        for (BaseDatos b : oyente.getCon().getNombresBD()) {
+            DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(b.getNombre());
             //System.out.println(a);
             modelo.insertNodeInto(nombreBD, conexion, cuenta);
-            try {
-                int cuentaTabla = 0;
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + a,
-                        oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
-                Statement sentencia = c.createStatement();
-                ResultSet rs = sentencia.executeQuery("show tables");
-                while (rs.next()) {
-                    
-                    for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
-                        //System.out.print(rs.getString(x) + "\t");
-                        DefaultMutableTreeNode datoTable = new DefaultMutableTreeNode(rs.getString(x));
-                        modelo.insertNodeInto(datoTable, nombreBD, cuentaTabla);
-                        ArrayList<String> columnas = obtenerColumnas(rs.getString(x), a);
-                        int cuentaColumna = 0;
-                        for (String col : columnas) {
-                            DefaultMutableTreeNode datoColumna = new DefaultMutableTreeNode(col);
-                            modelo.insertNodeInto(datoColumna, datoTable, cuentaColumna);
-                            cuentaColumna++;
-                        }
-                        
-                        cuentaTabla++;
-                        
-                    }
+            int cuentaTabla=0;
+            for (Tablas t : b.getTablas()) {
+                DefaultMutableTreeNode nombreTabla = new DefaultMutableTreeNode(t.getNombre());
+                modelo.insertNodeInto(nombreTabla, nombreBD, cuentaTabla);
+                //t.setColumnas(obtenerColumnas(t.getNombre(), b.getNombre()));
+                int cuentaColumnas = 0;
+                for (String c : t.getColumnas()) {
+                    DefaultMutableTreeNode nombreColumna = new DefaultMutableTreeNode(c);
+                    modelo.insertNodeInto(nombreColumna, nombreTabla, cuentaColumnas);
+                    cuentaColumnas++;
                 }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
-                System.out.println("Error " + e);
+                cuentaTabla++;
             }
+            cuenta++;
             
         }
         arbol.expandRow(0);
         return arbol;
     }
     
-    public ArrayList<String> obtenerColumnas(String tabla, String address) {
-        ArrayList<String> columnas = new ArrayList();
-        try {
+   /* public ArrayList <String> obtenerColumnas(String tabla, String database){
+        ArrayList <String> columnas = new ArrayList();
+        try{
             
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + address,
-                    oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
+            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText()+"/"+database,
+            oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
             Statement sentencia = c.createStatement();
-            ResultSet rs = sentencia.executeQuery("select * from " + tabla);
+            ResultSet rs = sentencia.executeQuery("select * from "+tabla);
             for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
                 columnas.add(rs.getMetaData().getColumnName(x));
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
-        }
+        }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e){}
         return columnas;
         
-    }
-
+    }*/
+    
+    
     //GETTERS AND SETTERS ----------------------------------------------------------------------------------------------------
 
     public JTextArea getTaConsulta() {
