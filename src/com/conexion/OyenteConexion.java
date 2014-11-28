@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -62,72 +63,138 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
         switch (etiq) {
             // Botones para manipulación de las bd...
             case "":
-                
-                    // Recargar árbol
+
+                // Recargar árbol
                 if (ae.getSource() == consultas.getReload()) {
-                    if(hayCambios){
+                    if (hayCambios) {
                         System.out.println("arbol");
                         hayCambios = false;
                         recargarArbol();
+                        consultas.setVisible(false);
+                        consultas.setVisible(true);
                     }
-                    
+
                     // Agregar columnas...
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
                     System.out.println("AgregarColumna");
-                    System.out.println("AgregarColumna");
-                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
-                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
-                    String columna = JOptionPane.showInputDialog("Columna nueva: ");
-                    String tipo = JOptionPane.showInputDialog("Tipo de dato: ");
-                    InsertarColumna c = new InsertarColumna(database, tabla, columna, tipo, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
-                    
+
                     // Agregar filas...
                 } else if (ae.getSource() == consultas.getAgregarFila()) {
                     System.out.println("agregarfila");
-                    System.out.println("agregarfila");
-                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
-                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
-                    InsertarFila i = new InsertarFila(database, tabla, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
 
                     // Agregar tablas...
                 } else if (ae.getSource() == consultas.getAgregarTabla()) {
                     m = new CrearTabla(con.getNombresBD(), con.getNombresTablas(), this);
                     System.out.println("agregartabla");
-                
+
                     // Agregar base de datos...
                 } else if (ae.getSource() == consultas.getAgregarbd()) {
                     String nombrebd = "";
-                    
-                    try{
+
+                    try {
                         nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la nueva base de datos",
                                 "Nueva base de datos", JOptionPane.INFORMATION_MESSAGE);
-                    }catch(NullPointerException npe){}
-                    
-                        try{
-                            if(!nombrebd.equals("")){
-                        
+                    } catch (NullPointerException npe) {
+                    }
+
+                    try {
+                        if (!nombrebd.equals("")) {
+
                             con.getStament().executeUpdate("CREATE DATABASE " + nombrebd);
                             JOptionPane.showMessageDialog(consultas, "Base de datos creada con éxito");
-    //                        recargarArbol();
+                            //                        recargarArbol();
                             hayCambios = true;
-                            }
+                        }
 
-                        } catch(SQLException e) {
-                            JOptionPane.showMessageDialog(consultas, e, "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-                        
-                        } catch(NullPointerException npe){}
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(consultas, e, "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+
+                    } catch (NullPointerException npe) {
+                    }
+
+                    // Borrar base de datos
+                } else if (ae.getSource() == consultas.getBorrarbd()) {
+                    System.out.println("Borrar bd");
+                    try {
+                        String nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la base de datos a borrar", "");
+
+                        con.getStament().executeUpdate("DROP DATABASE " + nombrebd);
+
+                        JOptionPane.showMessageDialog(consultas, "Base de datos borrada correctamente");
+
+                        hayCambios = true;
+
+                    } catch (SQLException | NullPointerException e) {
+                        JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } else if (ae.getSource() == consultas.getBorrarTabla()) {
+                    System.out.println("Borrar tabla");
+
+                    try {
+                        String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la tabla a borrar?", "");
+                        String nombretab = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la tabla a borrar", "");
+
+                        con.getStament().executeUpdate("USE " + nombrebd);
+                        con.getStament().executeUpdate("DROP TABLE " + nombretab);
+
+                        JOptionPane.showMessageDialog(consultas, "Tabla borrada correctamente");
+
+                        hayCambios = true;
+
+                    } catch (SQLException | NullPointerException e) {
+                        JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } else if (ae.getSource() == consultas.getBorrarFila()) {
+                    System.out.println("Borrar fila");
+
+                    try {
+                        String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la fila?", "");
+                        String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la fila?", "");
+                        String nombrepk = JOptionPane.showInputDialog(consultas, "Ingresa la PK de la tabla", "Ejemplo: idLibro");
+                        String nombrefil = JOptionPane.showInputDialog(consultas, "Ingresa el valor de la PK de la fila a borrar", "");
+
+                        con.getStament().executeUpdate("USE " + nombrebd);
+                        con.getStament().executeUpdate("DELETE FROM " + nombretab + " WHERE " + nombrepk + " = " + nombrefil);
+
+                        JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
+
+                        hayCambios = true;
+
+                    } catch (SQLException | NullPointerException e) {
+                        JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else if (ae.getSource() == consultas.getBorrarColumna()) {
+                    System.out.println("Borrar columna");
+
+                    try {
+                        String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la columna?", "");
+                        String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la columna a borrar?", "");
+                        String nombrecol = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la columna a borrar");
+
+                        con.getStament().executeUpdate("USE " + nombrebd);
+                        con.getStament().executeUpdate("ALTER TABLE " + nombretab + " DROP " + nombrecol);
+
+                        JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
+
+                        hayCambios = true;
+
+                    } catch (SQLException | NullPointerException e) {
+                        JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                    }
+
                 }
-
                 break;
-                
+
             case "Agregar columnas":
                 int contadordellaves = 0;
-                int seleccionado=0;
-                int cont=0;
-                
+                int seleccionado = 0;
+                int cont = 0;
+
                 for (JCheckBox keys : a.getPk()) {
                     if (keys.isSelected()) {
-                        seleccionado=cont;
+                        seleccionado = cont;
                         contadordellaves++;
                     }
                     cont++;
@@ -155,9 +222,9 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                         }
 
                     }
-                    agregartablaquery = agregartablaquery +",PRIMARY KEY("+a.getNombres().get(seleccionado).getText()+ "));";
+                    agregartablaquery = agregartablaquery + ",PRIMARY KEY(" + a.getNombres().get(seleccionado).getText() + "));";
                     try {
-                        con.getStament().executeQuery("USE "+m.getBasesDatos().getSelectedItem());
+                        con.getStament().executeQuery("USE " + m.getBasesDatos().getSelectedItem());
                         con.getStament().executeUpdate(agregartablaquery);
                         System.out.println("EXITO AL AGREGAR ");
                         JOptionPane.showMessageDialog(consultas, "La tabla se agregó correctamente");
@@ -170,28 +237,28 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     }
                 }
                 break;
-                
+
             case "Agregar tabla":
                 if (m.getTt().getText().equals("")) {
-                        JOptionPane.showMessageDialog(m, "Debes especificar un nombre para la tabla");
+                    JOptionPane.showMessageDialog(m, "Debes especificar un nombre para la tabla");
 
                 } else {
-                    try{
+                    try {
                         int numero = Integer.parseInt(JOptionPane.showInputDialog(m, "¿Cuántas columnas quieres agregar?", "1"));
-                        
-                        if(numero > 0){
+
+                        if (numero > 0) {
                             a = new AtributosCrearTabla(numero, this);
-                        }else{
+                        } else {
                             JOptionPane.showMessageDialog(m, "Escoge un valor positivo");
                         }
-                    
-                    }catch(NumberFormatException nfe){
-                            JOptionPane.showMessageDialog(m, "Ingresa un valor numérico");
+
+                    } catch (NumberFormatException nfe) {
+                        JOptionPane.showMessageDialog(m, "Ingresa un valor numérico");
                     }
                 }
 
                 break;
-                
+
             case "Aceptar":
 
                 if (validardatos(nc.tNombreConexion.getText(), nc.tPuerto.getText(), nc.tHost.getText(),
@@ -218,7 +285,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 
                     conx.add(p);
                     panel.agregarConexion(p);
-                    
+
                     oyente.habilitarBotones();
 
                     try {
@@ -243,7 +310,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                 //Testea conexion 
                 if (validardatos(nc.tNombreConexion.getText(), nc.tPuerto.getText(), nc.tHost.getText(),
                         nc.tUsuario.getText(), nc.tpContrasenia.getPassword())) {
-                    
+
                     c = new ConexionSQL(nc.tUsuario.getText(),
                             nc.tPuerto.getText(),
                             nc.tHost.getText(), nc.tpContrasenia.getText());
@@ -255,9 +322,9 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     } else {
                         JOptionPane.showMessageDialog(panel, "Conexion Fallida", "Error en la conexion", JOptionPane.ERROR_MESSAGE);
                     }
-                    
-                }else{
-                        JOptionPane.showMessageDialog(panel, "Debes llenar todos los campos");
+
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Debes llenar todos los campos");
                 }
                 break;
 
@@ -276,7 +343,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 //                        l.setVisible(false);
                         l.dispose();
                         oyente.deshabilitarBotones();
-                        
+
                     } else {
                         JOptionPane.showMessageDialog(l, "Contraseña Incorrecta", "Error al inicio de sesion", JOptionPane.ERROR_MESSAGE);
                         l.tPass.setText("");
@@ -458,27 +525,27 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
         nc.tpContrasenia.setText("");
     }
 
-    public void cancelarNuevaConexion(){
+    public void cancelarNuevaConexion() {
         int opcion = JOptionPane.showConfirmDialog(panel, "Se eliminará la nueva conexión", "Cancelar nueva conexión", JOptionPane.OK_CANCEL_OPTION);
 
-            if (opcion == JOptionPane.OK_OPTION) {
-                nc.dispose();
-                borrarCeldas();
-                oyente.habilitarBotones();
-            }
+        if (opcion == JOptionPane.OK_OPTION) {
+            nc.dispose();
+            borrarCeldas();
+            oyente.habilitarBotones();
+        }
     }
-    
-    public void cerrarLogin(){
+
+    public void cerrarLogin() {
         l.dispose();
         oyente.habilitarBotones();
     }
-    
-    public void cerrarConsultas(){
+
+    public void cerrarConsultas() {
         int eleccion = JOptionPane.showConfirmDialog(consultas, "¿Seguro que desea cerrar la conexión?",
-                        "Advertencia", JOptionPane.OK_CANCEL_OPTION);
+                "Advertencia", JOptionPane.OK_CANCEL_OPTION);
 
         if (eleccion == JOptionPane.OK_OPTION) {
-            for(TablaConsulta tablaCons: arrayConsultas){
+            for (TablaConsulta tablaCons : arrayConsultas) {
                 tablaCons.dispose();
             }
             arrayConsultas = new ArrayList<>();
@@ -487,7 +554,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
             oyente.habilitarBotones();
         }
     }
-    
+
     private boolean validarcontrasenia(char[] password) {
         boolean isCorrect = true;
         char[] correctPassword = p.getInfoConexion().get(4).getText().toCharArray();
@@ -542,7 +609,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                 combinacionTeclas = true;
                 tipoCombinacion = 2;
             }
-            
+
         } else if (!l.isVisible() && consultas != null) {
 
             if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -566,16 +633,16 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 
         if (combinacionTeclas) {
             combinacionTeclas = false;
-            
-            if(tipoCombinacion == 1){   
+
+            if (tipoCombinacion == 1) {
                 System.out.println("-----Control + Enter! ");
                 ejecutarConsulta();
-                
+
             }//else if(tipoCombinacion == 2){
 //                System.out.println("----- Control + W!");
 //                e.getComponent().setVisible(false);
 //            }
-            
+
             tipoCombinacion = -1;
         }
 //        System.out.println("Teclas liberadas");
@@ -588,29 +655,28 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
     @Override
     public void windowClosing(WindowEvent e) {
         System.out.println("Vas a cerrar la ventana de nueva consulta!");
-        
+
         // Si el evento proviene de un objeto de la clase de nc (NuevaConexion)...
-        if(e.getSource().getClass().isInstance(nc)){
+        if (e.getSource().getClass().isInstance(nc)) {
             cancelarNuevaConexion();
-            
-        // Si proviene de un objeto de la clase de l (Login)...
-        }else if(e.getSource().getClass().isInstance(l)){
+
+            // Si proviene de un objeto de la clase de l (Login)...
+        } else if (e.getSource().getClass().isInstance(l)) {
             cerrarLogin();
-            
-        // Si proviene de un objeto de la clase de consultas (Consulta)...
-        }else if(e.getSource().getClass().isInstance(consultas)){
+
+            // Si proviene de un objeto de la clase de consultas (Consulta)...
+        } else if (e.getSource().getClass().isInstance(consultas)) {
             cerrarConsultas();
-        
-        // Si proviene de un objeto JFrame (El principal)
-        }else if(e.getSource().getClass().isInstance(new JFrame())){
+
+            // Si proviene de un objeto JFrame (El principal)
+        } else if (e.getSource().getClass().isInstance(new JFrame())) {
             int opcion = JOptionPane.showConfirmDialog(null, "Se cerrará el programa", "Advertencia", JOptionPane.OK_CANCEL_OPTION);
-        
-            if(opcion == JOptionPane.OK_OPTION){
+
+            if (opcion == JOptionPane.OK_OPTION) {
                 System.exit(-1);
             }
         }
-        
-        
+
     }
 
     @Override
@@ -632,15 +698,15 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-    
+
     public MiPanel getP() {
         return panel;
     }
 
-    public void setHayCambios(boolean hayCambios){
+    public void setHayCambios(boolean hayCambios) {
         this.hayCambios = hayCambios;
     }
-    
+
     public void setPanel(MiPanel p) {
         this.panel = p;
     }
