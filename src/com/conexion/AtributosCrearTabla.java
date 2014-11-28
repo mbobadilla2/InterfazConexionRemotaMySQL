@@ -12,50 +12,63 @@ import javax.swing.JTextField;
 /**
  * @author Luis Created on 25/11/2014, 10:02:44 PM
  */
-public class Atributos extends JFrame {
+public class AtributosCrearTabla extends JFrame {
     private OyenteConexion o;
     private int numero;
     private ArrayList<String> columna;
     private JPanel content = new JPanel();
-    private String[] tdato = new String[]{"INT", "CHAR(20)", "DATE", "TINY"};
-    private JButton agregar=new JButton("Agregar Columnas");
+    private String[] tdato = llenarLista();
+    private JButton agregar=new JButton("Agregar columnas");
     private ArrayList <JTextField> nombres;
     private ArrayList <JComboBox> atipos;
     private ArrayList <JCheckBox> nulos;
     private ArrayList <JCheckBox> autos;
     private ArrayList <JCheckBox> pk;
 
-    public Atributos(int numero,OyenteConexion o) {
-        this.o=o;
+    public AtributosCrearTabla(int numero,OyenteConexion o) {
+        this.setTitle("Agregar columnas");
+        this.o = o;
         nombres=new ArrayList<>();
         atipos=new ArrayList<>();
         nulos=new ArrayList<>();
         autos=new ArrayList<>();
         pk=new ArrayList<>();
         this.numero = numero;
-        this.setSize(600, 600);
-        this.setLocation(40, 20);
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        
+        if(numero <= 5){
+            this.setSize(835, (52*numero)+65);   
+        }else{
+            this.setSize(835, 300);   
+        }
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addComponentes();
         addEventos();
         this.setVisible(true);
     }
 
     private void addComponentes() {
-
         content.setLayout(new BorderLayout());
-        JPanel pCentro = new JPanel();
-        pCentro.setLayout(new GridLayout(numero, 7, 5, 5));
-       JPanel pSur=new JPanel();
+        JPanel grilla = new JPanel();
+//        pCentro.setLayout(new GridLayout(numero, 7, 5, 5));
+        grilla.setLayout(new GridLayout(numero, 1));
+        
+        JPanel pCentro;
+        JPanel pSur = new JPanel();
+        
+        JScrollPane scroll;
+        
         for (int i = 0; i < numero; i++) {
+            pCentro = new JPanel();
+            pCentro.setBorder(BorderFactory.createLineBorder(this.getBackground(), 5));
             JLabel l = new JLabel("Atributo #" + (i + 1) + "  Nombre: ");
-            JTextField nombre = new JTextField();
+            JTextField nombre = new JTextField(7);
             nombre.setName((i + 1) + "");
             JLabel tipo = new JLabel("Tipo :");
             JComboBox tipos = new JComboBox(tdato);
-            JCheckBox nonull = new JCheckBox("No null");
-            JCheckBox auto = new JCheckBox("AutoInclemental");
-            JCheckBox pks=new JCheckBox("PrimaryKey");
+            JCheckBox nonull = new JCheckBox("Not null");
+            JCheckBox auto = new JCheckBox("Auto incremental");
+            JCheckBox pks=new JCheckBox("Primary key");
             nonull.setName((i + 1) + "");
             auto.setName((i + 1) + "");
             tipos.setName((i + 1) + "");
@@ -72,15 +85,28 @@ public class Atributos extends JFrame {
             autos.add(auto);
             pk.add(pks);
 
+            grilla.add(pCentro);
         }
+        
+        scroll = new JScrollPane(grilla);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
         pSur.add(agregar);
         content.add(pSur,"South");
 
-        content.add(pCentro, "Center");
+        content.add(scroll, "Center");
+        
         this.add(content);
 
     }
 
+    public String[] llenarLista(){
+        return new String[]{"INT","TINYINT","SMALLINT","MEDIUMINT","INTEGER","BIGINT","FLOAT","DOUBLE","REAL",
+                "DATE","DATETIME","TIMESTAMP","TIME","YEAR","CHAR(20)","VARCHAR(30)","TINYBLOB",
+                "TINYTEXT","BLOB","TEXT","MEDIUMBLOB","MEDIUMTEXT","LONGBLOB","LONGTEXT"};
+    }
+    
     private void addEventos() {
         agregar.addActionListener(o);
     }

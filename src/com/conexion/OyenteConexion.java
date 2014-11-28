@@ -6,6 +6,7 @@
 package com.conexion;
 
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.IllegalComponentStateException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +36,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
     private MiOyente oyente;
     private MiPanel panel;
     private NuevaConexion nc;
-    private Modificaciones m;
+    private CrearTabla m;
     private ArrayList<PanelConexion> conx;
     protected PanelConexion p; //conexion actual
     private Consulta consultas = null;
@@ -47,7 +48,8 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
     private int[] teclasPresionadas = new int[2];
     private boolean combinacionTeclas = false;
     private int tipoCombinacion = -1;
-    private Atributos a;
+    private boolean hayCambios = false;
+    private AtributosCrearTabla a;
 
     public OyenteConexion(MiOyente oyente) {
         this.oyente = oyente;
@@ -58,36 +60,57 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
         String etiq = ae.getActionCommand();
 
         switch (etiq) {
-            // El botón con las flechas de recarga no tiene etiqueta...
+            // Botones para manipulación de las bd...
             case "":
+                
+                    // Recargar árbol
                 if (ae.getSource() == consultas.getReload()) {
-                    System.out.println("arbol");
-//                    recargarArbol();
+                    if(hayCambios){
+                        System.out.println("arbol");
+                        hayCambios = false;
+                        recargarArbol();
+                    }
+                    
+                    // Agregar columnas...
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
                     System.out.println("AgregarColumna");
+                    
+                    // Agregar filas...
                 } else if (ae.getSource() == consultas.getAgregarFila()) {
                     System.out.println("agregarfila");
 
+                    // Agregar tablas...
                 } else if (ae.getSource() == consultas.getAgregarTabla()) {
-                    m = new Modificaciones(con.getNombresBD(), con.getNombresTablas(), this);
+                    m = new CrearTabla(con.getNombresBD(), con.getNombresTablas(), this);
                     System.out.println("agregartabla");
+                
+                    // Agregar base de datos...
                 } else if (ae.getSource() == consultas.getAgregarbd()) {
+                    String nombrebd = "";
+                    
+                    try{
+                        nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la nueva base de datos",
+                                "Nueva base de datos", JOptionPane.INFORMATION_MESSAGE);
+                    }catch(NullPointerException npe){}
+                    
+                        try{
+                            if(!nombrebd.equals("")){
+                        
+                            con.getStament().executeUpdate("CREATE DATABASE " + nombrebd);
+                            JOptionPane.showMessageDialog(consultas, "Base de datos creada con éxito");
+    //                        recargarArbol();
+                            hayCambios = true;
+                            }
 
-                    String nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la nueva base de datos", "");
-                    try {
-                        con.getStament().executeUpdate("CREATE DATABASE " + nombrebd);
-                        JOptionPane.showMessageDialog(consultas, "Base de datos creada con exito!");
-//                        recargarArbol();
-
-                    } catch (SQLException e) {
-                        JOptionPane.showMessageDialog(consultas, e);
-                    }
-
+                        } catch(SQLException e) {
+                            JOptionPane.showMessageDialog(consultas, e, "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
+                        
+                        } catch(NullPointerException npe){}
                 }
 
                 break;
                 
-            case "Agregar Columnas":
+            case "Agregar columnas":
                 int contadordellaves = 0;
                 int seleccionado=0;
                 int cont=0;
@@ -102,7 +125,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                 }
                 if (contadordellaves == 0) {
 
-                    JOptionPane.showMessageDialog(a, "Seleccione al menos unallave primaria ");
+                    JOptionPane.showMessageDialog(a, "Seleccione una llave primaria ");
 
                 } else if (contadordellaves > 1) {
                     JOptionPane.showMessageDialog(a, "Solo puedes agregar una llave primaria");
@@ -127,22 +150,34 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                         con.getStament().executeQuery("USE "+m.getBasesDatos().getSelectedItem());
                         con.getStament().executeUpdate(agregartablaquery);
                         System.out.println("EXITO AL AGREGAR ");
+                        JOptionPane.showMessageDialog(consultas, "La tabla se agregó correctamente");
                         m.setVisible(false);
                         a.setVisible(false);
+                        hayCambios = true;
                         //falta limpiar los textfield de a
-                    } catch (Exception e) {
+                    } catch (SQLException | HeadlessException e) {
+                        JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error al crear las tablas", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 break;
                 
-            case "Agregar":
+            case "Agregar tabla":
                 if (m.getTt().getText().equals("")) {
-                    JOptionPane.showMessageDialog(m, "Agrega nombre de la tabla");
+                        JOptionPane.showMessageDialog(m, "Debes especificar un nombre para la tabla");
 
                 } else {
-                    int numero = Integer.parseInt(JOptionPane.showInputDialog(m, "Numero de Columnas a agregar", "1"));
-                    a = new Atributos(numero, this);
-
+                    try{
+                        int numero = Integer.parseInt(JOptionPane.showInputDialog(m, "¿Cuántas columnas quieres agregar?", "1"));
+                        
+                        if(numero > 0){
+                            a = new AtributosCrearTabla(numero, this);
+                        }else{
+                            JOptionPane.showMessageDialog(m, "Escoge un valor positivo");
+                        }
+                    
+                    }catch(NumberFormatException nfe){
+                            JOptionPane.showMessageDialog(m, "Ingresa un valor numérico");
+                    }
                 }
 
                 break;
@@ -353,6 +388,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     tipoCons = 1;
                 } else {
                     tipoCons = 0;
+                    hayCambios = true;
                 }
 
                 System.out.println("Tipo cons " + tipoCons);
@@ -534,55 +570,6 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
         }
 //        System.out.println("Teclas liberadas");
     }
-    
-
-    public MiPanel getP() {
-        return panel;
-    }
-
-    public void setPanel(MiPanel p) {
-        this.panel = p;
-    }
-
-    public NuevaConexion getNc() {
-        return nc;
-    }
-
-    public void setNc(NuevaConexion nc) {
-        this.nc = nc;
-    }
-
-    public ArrayList<PanelConexion> getConx() {
-        return conx;
-    }
-
-    public void setConx(ArrayList<PanelConexion> conx) {
-        this.conx = conx;
-    }
-
-    public ArrayList<TablaConsulta> getArrayConsultas() {
-        return arrayConsultas;
-    }
-
-    public Login getL() {
-        return l;
-    }
-
-    public void setL(Login l) {
-        this.l = l;
-    }
-
-    public PanelConexion getPca() {
-        return p;
-    }
-
-    public void setP(PanelConexion p) {
-        this.p = p;
-    }
-
-    public ConexionSQL getCon() {
-        return con;
-    }
 
     @Override
     public void windowOpened(WindowEvent e) {
@@ -635,5 +622,56 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
+    
+    public MiPanel getP() {
+        return panel;
+    }
 
+    public void setHayCambios(boolean hayCambios){
+        this.hayCambios = hayCambios;
+    }
+    
+    public void setPanel(MiPanel p) {
+        this.panel = p;
+    }
+
+    public NuevaConexion getNc() {
+        return nc;
+    }
+
+    public void setNc(NuevaConexion nc) {
+        this.nc = nc;
+    }
+
+    public ArrayList<PanelConexion> getConx() {
+        return conx;
+    }
+
+    public void setConx(ArrayList<PanelConexion> conx) {
+        this.conx = conx;
+    }
+
+    public ArrayList<TablaConsulta> getArrayConsultas() {
+        return arrayConsultas;
+    }
+
+    public Login getL() {
+        return l;
+    }
+
+    public void setL(Login l) {
+        this.l = l;
+    }
+
+    public PanelConexion getPca() {
+        return p;
+    }
+
+    public void setP(PanelConexion p) {
+        this.p = p;
+    }
+
+    public ConexionSQL getCon() {
+        return con;
+    }
 }

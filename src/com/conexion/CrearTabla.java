@@ -3,12 +3,12 @@ package com.conexion;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**
@@ -17,7 +17,7 @@ import javax.swing.JTextField;
  * Ventana que hará actualizaciones de diferente tipo
  */
 
-public class Modificaciones extends JFrame{ 
+public class CrearTabla extends JFrame{ 
     
     private JComboBox basesDatos;
     private JComboBox tablas;
@@ -26,31 +26,33 @@ public class Modificaciones extends JFrame{
     private JButton agregar;
     JTextField tt=new JTextField();
 
-    Modificaciones(ArrayList<String> nombresBD, ArrayList<String> nombresTablasm,OyenteConexion o) {
-       basesDatos=new JComboBox(nombresBD.toArray());
-       this.o=o;
+    CrearTabla(ArrayList<String> nombresBD, ArrayList<String> nombresTablasm, OyenteConexion o) {
+        this.setTitle("Crear nueva tabla");
+       basesDatos = new JComboBox(nombresBD.toArray());
+       this.o = o;
       // tablas =new JComboBox(nombresTablas.toArray());
        addComponentes();
-       this.setSize(600,150);
+       this.setSize(430, 150);
        this.setResizable(false);
-       this.setLocation(500,500);
-       this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+       this.setLocationRelativeTo(null);
+       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
        this.setVisible(true);
        addEventos();
-                  }
+    }
     
     
     
 
     private void addComponentes() {
-        content=new JPanel(new BorderLayout());
-        JPanel pCentro=new JPanel(new GridLayout(2,1));
-        JPanel pSur =new JPanel();
-        JLabel b=new JLabel("Escoje la base de datos a la que deseas agregar una tabla");
-        JLabel t=new JLabel("Escribe el nombre de la tabla a crear");
+        content = new JPanel(new BorderLayout());
+        content.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
+        JPanel pCentro = new JPanel(new GridLayout(2,1));
+        JPanel pSur = new JPanel();
+        JLabel b = new JLabel("Agregar tabla en: ");
+        JLabel t = new JLabel("Nombre de la tabla: ");
        
     
-        agregar=new JButton("Agregar");
+        agregar = new JButton("Agregar tabla");
         
         pCentro.add(b);
         pCentro.add(basesDatos);

@@ -79,7 +79,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarFila.setIcon(new ImageIcon("src/icon/add_row.png"));
         agregarColumna = new JButton("");
         agregarColumna.setIcon(new ImageIcon("src/icon/add_column.png"));
-        reload = new JButton("Deshabilitado...");
+        reload = new JButton("");
         reload.setIcon(new ImageIcon("src/icon/reload.png"));
         agregarColumna.setName("agregarcolumna");
         agregarFila.setName("agregarfila");
@@ -113,12 +113,21 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         JPanel pSur = new JPanel();
         pSur.setLayout(new BorderLayout());
         JPanel pOeste = new JPanel();
-        pOeste.setLayout(new GridLayout(4, 1));
+        pOeste.setPreferredSize(new Dimension(48, 385));
+        JScrollPane scrollOeste;
+//        pOeste.setLayout(new GridLayout(4, 1));
         
         pOeste.add(agregarbd);
         pOeste.add(agregarTabla);
         pOeste.add(agregarFila);
         pOeste.add(agregarColumna);
+        
+        scrollOeste = new JScrollPane(pOeste);
+        scrollOeste.setPreferredSize(new Dimension(55, 385));
+//        scrollOeste.setBorder(BorderFactory.createLineBorder(this.getBackground(), 5));
+        scrollOeste.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollOeste.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
         
@@ -140,7 +149,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         content.add(despConsulta, "Center");
         content.add(pSur, "South");
         content.add(ar, "West");
-        content.add(pOeste, "East");
+        content.add(scrollOeste, "East");
         
         this.add(content);
         

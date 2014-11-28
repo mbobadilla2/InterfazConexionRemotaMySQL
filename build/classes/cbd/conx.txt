@@ -3,11 +3,6 @@ prueba loca 2
 3306
 Luis Loco 2
 567898fv
-A VER EL CODIGO 
-127.0.0.1
-3306
-root
-Itver94
 Fernando2
 localhost
 3306
@@ -18,22 +13,17 @@ FundBD
 3306
 root
 root
-Local
-127.0.0.1
-3306
-local
-local
 conexion
 127.0.0.1
 3306
 root
 root
-jij
+NuevaConexion
 127.0.0.1
 3306
-luis
-1234
-NuevaConexion
+local
+local
+Mac OS X Local
 127.0.0.1
 3306
 local

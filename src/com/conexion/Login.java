@@ -35,7 +35,7 @@ public class Login extends JFrame {  //login es un frame = ventana
      */
     public Login() {
         this.setTitle("Proporcione una contraseña");
-        this.setSize(315, 120);
+        this.setSize(315, 145);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -53,8 +53,14 @@ public class Login extends JFrame {  //login es un frame = ventana
         JPanel pSur = new JPanel();
         login.setLayout(new GridLayout(2, 2));
         JLabel lUser = new JLabel("Usuario");
+        lUser.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
         JLabel lPass = new JLabel("Contraseña");
+        lPass.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
 
+        
+        lUsuario.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
+//        tPass.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
+        
         login.add(lUser);
         login.add(lUsuario);
         login.add(lPass);

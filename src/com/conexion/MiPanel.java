@@ -28,8 +28,11 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
     private ArrayList<String> conexionesArchivo = new ArrayList();
     private JPanel pCentro;
     private int numeroConexiones;
-    private final Color color1 = new Color(106, 90, 205);//Colores para los paneles
-    private final Color color2 = new Color(0, 191, 255);
+//    private final Color color1 = new Color(106, 90, 205);//Colores para los paneles
+//    private final Color color2 = new Color(0, 191, 255);
+    private final Color color1 = new Color(74, 140, 255);
+    private final Color color2 = new Color(206, 206, 206);
+    
     private JLabel lNumeroConexiones;
 //---------------------------------------------------------------------------------------------------
 
@@ -51,8 +54,6 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
      * @return void
      */
     private void agregarComponentes() {
-     
-        
         this.setLayout(new BorderLayout()); // El layout del panel es un borderlayout(n,s,e,w,c)
 
         // Declaraciones -------------------------------------------------------------------------------------------------
@@ -68,11 +69,11 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         //-----------------------------------------------------------------------------------------------------------------
 
         //nombre de las etiqetas acomodados 
-        etiquetasPaneles.add("Nombre de la Conexion: ");
+        etiquetasPaneles.add("Nombre conexión: ");
         etiquetasPaneles.add("Host: ");
         etiquetasPaneles.add("Puerto: ");
         etiquetasPaneles.add("Usuario: ");
-        etiquetasPaneles.add("Contraseña: ");
+        etiquetasPaneles.add("");
 
         pNorte.add(bAgregarConexion); //agrego el boton  agregar conexion a el panel norte 
 
@@ -83,6 +84,7 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         numeroConexiones = contador / etiquetasPaneles.size();  //Obtiene el numero de conexiones (el numero de lineas entre el numero de datos que piden)
 
         pCentro.setLayout(new GridLayout(calcularfilas(numeroConexiones), 3)); //panel que estara el cento debe tener un layout grid(layout de tipo tabla sencilla)
+//        pCentro.setBorder(BorderFactory.createLineBorder(this.getBackground(), 15));
         //Agregando paneles con conexiones
         int corrida = 0; //es la guia de los datos dentro del array 
         for (int i = 0; i < numeroConexiones; i++) {
@@ -95,6 +97,8 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
                 panelConexion.setBackground(color2);
             }
 
+//            panelConexion.setBorder(BorderFactory.createLineBorder(panelConexion.getBackground(), 15));
+             
             for (int j = 0; j < 5; j++) {       //ponemos el contenido en el panel que se creo
 
                 panelConexion.add(new JLabel(etiquetasPaneles.get(j)));    //obtenetmos la etiqueta del array de strings de nombre de etiquetas 
@@ -131,7 +135,7 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //--------------------------------------------------------------------------------------------
 
-        lNumeroConexiones.setText("Numero de Conexiones: " + numeroConexiones); //le ponemos a la etiqueta el numero de conexiones que hay
+        lNumeroConexiones.setText("Total de conexiones: " + numeroConexiones); //le ponemos a la etiqueta el numero de conexiones que hay
         pSur.add(lNumeroConexiones);  //agregamos la etiqueta con el numero de conexiones al panel que va a estar en la parte sur del panel principal del frame
         this.add(pSur, "South");      //panel sur al sur del panel principal
         this.add(pNorte, "North");    //panel norte al norte del panel pricipal
@@ -207,6 +211,7 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
                 pCentro.add(new JPanel());
             }
         }
+        agregartips();
         redimensionarPanel();
     }
     /**
