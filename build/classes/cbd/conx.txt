@@ -33,3 +33,8 @@ Luis
 3306
 root
 Itver94
+c
+127.0.0.1
+3306
+root
+root

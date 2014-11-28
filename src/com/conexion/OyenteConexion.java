@@ -76,11 +76,22 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 
                     // Agregar columnas...
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
+                    
                     System.out.println("AgregarColumna");
+                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
+                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
+                    String columna = JOptionPane.showInputDialog("Columna nueva: ");
+                    String tipo = JOptionPane.showInputDialog("Tipo de dato: ");
+                    InsertarColumna c = new InsertarColumna(database, tabla, columna, tipo, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                    
 
                     // Agregar filas...
                 } else if (ae.getSource() == consultas.getAgregarFila()) {
                     System.out.println("agregarfila");
+  
+                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
+                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
+                    InsertarFila i = new InsertarFila(database, tabla, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
 
                     // Agregar tablas...
                 } else if (ae.getSource() == consultas.getAgregarTabla()) {
