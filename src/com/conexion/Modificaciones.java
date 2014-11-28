@@ -26,7 +26,7 @@ public class Modificaciones extends JFrame{
     private JButton agregar;
     JTextField tt=new JTextField();
 
-    Modificaciones(ArrayList<String> nombresBD, ArrayList<String> nombresTablasm,OyenteConexion o) {
+    Modificaciones(ArrayList<BaseDatos> nombresBD, ArrayList<Tablas> nombresTablasm,OyenteConexion o) {
        basesDatos=new JComboBox(nombresBD.toArray());
        this.o=o;
       // tablas =new JComboBox(nombresTablas.toArray());
