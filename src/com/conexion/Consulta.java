@@ -37,6 +37,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     private JButton agregarTabla;
     private JButton agregarFila;
     private JButton agregarColumna;
+    private JButton borrarbd;
+    private JButton borrarTabla;
+    private JButton borrarColumna;
+    private JButton borrarFila;
     private JMenuItem nuevo;
     private JMenuItem abrir;
     private JMenuItem guardar;
@@ -55,7 +59,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
      * que los necesiten
      */
     public Consulta(OyenteConexion oyente) {
-        this.setTitle("Conexion con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());        
+        this.setTitle("Conexión con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());        
         this.oyente = oyente;
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
@@ -85,6 +89,11 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarFila.setName("agregarfila");
         agregarTabla.setName("agregatabla");
         agregarbd.setName("agregarbd");
+        
+        borrarbd = new JButton("bbd");
+        borrarTabla = new JButton("bt");
+        borrarColumna = new JButton("bc");
+        borrarFila = new JButton("bf");
         
         JMenuBar menu = new JMenuBar();
         nuevo = new JMenuItem("Nuevo");
@@ -121,12 +130,17 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         pOeste.add(agregarTabla);
         pOeste.add(agregarFila);
         pOeste.add(agregarColumna);
+        pOeste.add(new JSeparator());
+        pOeste.add(borrarbd);
+        pOeste.add(borrarTabla);
+        pOeste.add(borrarColumna);
+        pOeste.add(borrarFila);
         
         scrollOeste = new JScrollPane(pOeste);
-        scrollOeste.setPreferredSize(new Dimension(55, 385));
+        scrollOeste.setPreferredSize(new Dimension(65, 385));
 //        scrollOeste.setBorder(BorderFactory.createLineBorder(this.getBackground(), 5));
         scrollOeste.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollOeste.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollOeste.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
         taConsulta = new JTextArea();
         JScrollPane despConsulta = new JScrollPane(taConsulta);
@@ -179,6 +193,11 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         taConsulta.setFocusable(true);
         taConsulta.addKeyListener(oyente);
         
+        borrarbd.addActionListener(oyente);
+        borrarTabla.addActionListener(oyente);
+        borrarColumna.addActionListener(oyente);
+        borrarFila.addActionListener(oyente);
+        
         this.addWindowListener(oyente);
     }
     
@@ -195,48 +214,62 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         render.setOpenIcon(new ImageIcon("src/icon/dbmain.png"));
         int cuenta = 0;
         
-        for (BaseDatos b : oyente.getCon().getNombresBD()) {
-            DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(b.getNombre());
+        for (String a : oyente.getCon().getNombresBD()) {
+            DefaultMutableTreeNode nombreBD = new DefaultMutableTreeNode(a);
             //System.out.println(a);
             modelo.insertNodeInto(nombreBD, conexion, cuenta);
-            int cuentaTabla=0;
-            for (Tablas t : b.getTablas()) {
-                DefaultMutableTreeNode nombreTabla = new DefaultMutableTreeNode(t.getNombre());
-                modelo.insertNodeInto(nombreTabla, nombreBD, cuentaTabla);
-                //t.setColumnas(obtenerColumnas(t.getNombre(), b.getNombre()));
-                int cuentaColumnas = 0;
-                for (String c : t.getColumnas()) {
-                    DefaultMutableTreeNode nombreColumna = new DefaultMutableTreeNode(c);
-                    modelo.insertNodeInto(nombreColumna, nombreTabla, cuentaColumnas);
-                    cuentaColumnas++;
+            try {
+                int cuentaTabla = 0;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + a,
+                        oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
+                Statement sentencia = c.createStatement();
+                ResultSet rs = sentencia.executeQuery("show tables");
+                while (rs.next()) {
+                    
+                    for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
+                        //System.out.print(rs.getString(x) + "\t");
+                        DefaultMutableTreeNode datoTable = new DefaultMutableTreeNode(rs.getString(x));
+                        modelo.insertNodeInto(datoTable, nombreBD, cuentaTabla);
+                        ArrayList<String> columnas = obtenerColumnas(rs.getString(x), a);
+                        int cuentaColumna = 0;
+                        for (String col : columnas) {
+                            DefaultMutableTreeNode datoColumna = new DefaultMutableTreeNode(col);
+                            modelo.insertNodeInto(datoColumna, datoTable, cuentaColumna);
+                            cuentaColumna++;
+                        }
+                        
+                        cuentaTabla++;
+                        
+                    }
                 }
-                cuentaTabla++;
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+                System.out.println("Error " + e);
             }
-            cuenta++;
             
         }
         arbol.expandRow(0);
         return arbol;
     }
     
-   /* public ArrayList <String> obtenerColumnas(String tabla, String database){
-        ArrayList <String> columnas = new ArrayList();
-        try{
+    public ArrayList<String> obtenerColumnas(String tabla, String address) {
+        ArrayList<String> columnas = new ArrayList();
+        try {
             
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText()+"/"+database,
-            oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
+            Connection c = DriverManager.getConnection("jdbc:mysql://" + oyente.p.getInfoConexion().get(1).getText() + ":" + oyente.p.getInfoConexion().get(2).getText() + "/" + address,
+                    oyente.p.getInfoConexion().get(3).getText(), oyente.p.getInfoConexion().get(4).getText());
             Statement sentencia = c.createStatement();
-            ResultSet rs = sentencia.executeQuery("select * from "+tabla);
+            ResultSet rs = sentencia.executeQuery("select * from " + tabla);
             for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
                 columnas.add(rs.getMetaData().getColumnName(x));
             }
-        }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e){}
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+        }
         return columnas;
         
-    }*/
-    
-    
+    }
+
     //GETTERS AND SETTERS ----------------------------------------------------------------------------------------------------
 
     public JTextArea getTaConsulta() {
@@ -312,6 +345,10 @@ public class Consulta extends JFrame { //clase consulta es una ventana
         agregarTabla.setToolTipText("Agrega una nueva tabla una base de datos");
         agregarbd.setToolTipText("Crea una nueva base de datos");
         
+        borrarbd.setToolTipText("Elimina una base de datos");
+        borrarTabla.setToolTipText(("Elimina una tabla de una base de datos"));
+        borrarColumna.setToolTipText("Elimina una columna de una tabla");
+        borrarFila.setToolTipText("Elimina una fila de una tabla");
     }
     
     public void setAr(JScrollPane ar) {
@@ -325,5 +362,22 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public JPanel getContent() {
         return content;
     }
+
+    public JButton getBorrarbd() {
+        return borrarbd;
+    }
+
+    public JButton getBorrarTabla() {
+        return borrarTabla;
+    }
+
+    public JButton getBorrarColumna() {
+        return borrarColumna;
+    }
+
+    public JButton getBorrarFila() {
+        return borrarFila;
+    }
+    
     
 }

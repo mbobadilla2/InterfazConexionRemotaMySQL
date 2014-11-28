@@ -31,8 +31,8 @@ public class ConexionSQL {
     private String url;
     private Connection conexion = null;
     private Statement stament;
-    private ArrayList<BaseDatos> nombresBD = new ArrayList();
-    private ArrayList<Tablas> nombresTablas = new ArrayList();
+    private ArrayList<String> nombresBD = new ArrayList();
+    private ArrayList<String> nombresTablas = new ArrayList();
 
     /**
      * Constructor que inicializa el string que se pasara para hacer la conexion
@@ -97,32 +97,22 @@ public class ConexionSQL {
     private void guardarNombresBD() {
         try {
             ResultSet db = stament.executeQuery("show databases");
-            ResultSet r;
+            ResultSet tablas;
 
             while (db.next()) {
                 for (int i = 1; i <= db.getMetaData().getColumnCount(); i++) {
-                    BaseDatos bd = new BaseDatos();
-                    bd.setNombre(db.getString(i));
-                    nombresBD.add(bd);
+                    nombresBD.add(db.getString(i));
                     Statement stbd = conexion.createStatement();
                     stbd.executeQuery("use " + db.getString(i) + ";");
                     Statement sta = conexion.createStatement();
-                    r = sta.executeQuery("show tables");
-                    while (r.next()) {
-                        for (int j = 1; j <= r.getMetaData().getColumnCount(); j++) {
-                            Tablas t = new Tablas ();
-                            t.setNombre(r.getString(j));
-                            
-                            Statement stb = conexion.createStatement();
-                            ResultSet c = stb.executeQuery("select * from "+t.getNombre());
-                            for (int x = 1; x <= c.getMetaData().getColumnCount(); x++) {
-                                t.getColumnas().add(c.getMetaData().getColumnName(x));
-                            }
-                            bd.getTablas().add(t);
+                    tablas = sta.executeQuery("show tables");
+                    while (tablas.next()) {
+                        for (int j = 1; j <= tablas.getMetaData().getColumnCount(); j++) {
+                            nombresTablas.add(tablas.getString(j));
                         }
                       
                     }
-                      
+                      nombresTablas.add("*");
                 }
             }
            
@@ -141,11 +131,11 @@ public class ConexionSQL {
         this.stament = stament;
     }
 
-    public ArrayList<BaseDatos> getNombresBD() {
+    public ArrayList<String> getNombresBD() {
         return nombresBD;
     }
 
-    public ArrayList<Tablas> getNombresTablas() {
+    public ArrayList<String> getNombresTablas() {
         return nombresTablas;
     }
 

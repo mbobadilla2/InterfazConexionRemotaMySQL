@@ -26,16 +26,10 @@ public class CrearTabla extends JFrame{
     private JButton agregar;
     JTextField tt=new JTextField();
 
-<<<<<<< HEAD:src/com/conexion/CrearTabla.java
     CrearTabla(ArrayList<String> nombresBD, ArrayList<String> nombresTablasm, OyenteConexion o) {
         this.setTitle("Crear nueva tabla");
        basesDatos = new JComboBox(nombresBD.toArray());
        this.o = o;
-=======
-    Modificaciones(ArrayList<BaseDatos> nombresBD, ArrayList<Tablas> nombresTablasm,OyenteConexion o) {
-       basesDatos=new JComboBox(nombresBD.toArray());
-       this.o=o;
->>>>>>> FETCH_HEAD:src/com/conexion/Modificaciones.java
       // tablas =new JComboBox(nombresTablas.toArray());
        addComponentes();
        this.setSize(430, 150);
