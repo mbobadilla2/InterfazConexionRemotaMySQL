@@ -60,16 +60,30 @@ public class MiOyente extends MouseAdapter implements ActionListener {
                 }
 
                 break;
+                
+            case "":
+                if(e.getSource().equals(panel.getInfo())){
+                    JOptionPane.showMessageDialog(null, "\nEste programa fue desarrollado por " +
+                            "\n\nº Miguel Fernando Bobadilla Contreras" +
+                            "\n\nº Luis Ángel Pérez Muñoz" + 
+                            "\n\nº José Ramón Márquez Solano" +
+                            "\n\nº José Rubén Pérez Rodríguez" +
+                            "\n\nº Valery Abigail Cambara Gil" +
+                            "\n\nv.1.0.",
+                            "Proyecto fundamentos de base de datos", JOptionPane.INFORMATION_MESSAGE);
+                }
         }
     }
 
     public void deshabilitarBotones(){
         panel.getbAgregarConexion().setEnabled(false);
+        panel.getInfo().setEnabled(false);
         ventanaActiva = true;
     }
     
     public void habilitarBotones(){
         panel.getbAgregarConexion().setEnabled(true);
+        panel.getInfo().setEnabled(true);
         ventanaActiva = false;
     }
     

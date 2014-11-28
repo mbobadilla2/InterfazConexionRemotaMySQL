@@ -58,7 +58,7 @@ public class Consulta extends JFrame { //clase consulta es una ventana
     public Consulta(OyenteConexion oyente) {
         this.setTitle("Conexión con usuario :  " + oyente.getCon().getUser() + "   en   " + oyente.getCon().getUrl());
         this.oyente = oyente;
-        this.setSize(640, 480);
+        this.setSize(800, 480);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addComponentes();

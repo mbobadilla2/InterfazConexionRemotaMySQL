@@ -8,6 +8,7 @@ package com.conexion;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JButton;
@@ -67,8 +68,11 @@ public class InsertarFila extends JFrame{
             System.out.println("insert into "+database+"."+table+"("+campos+") values ("+valores+")");
             statement.execute("insert into "+database+"."+table+"("+campos+") values ("+valores+")");
             JOptionPane.showMessageDialog(this, "Insertado!", "Exito", JOptionPane.CLOSED_OPTION);
+            o.setHayCambios(true);
             
-        } catch (Exception e) {
+        } catch(NullPointerException npe){
+            
+        } catch(Exception e) {
             JOptionPane.showMessageDialog(this, "Ocurrio un error al insertar", "Advertencia", JOptionPane.ERROR_MESSAGE);
             System.out.println(e);
         }

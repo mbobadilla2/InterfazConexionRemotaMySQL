@@ -43,7 +43,7 @@ public class Main {         //Clase principal
         oyenteConexion.setPanel(panel); //este panel es el mismo que se usa en oyente conexion
 
         //--------------------------------------------------------------------------------
-        ventanaPrincipal.setSize(930, 479); //Definimos el tamaño de la ventana principal
+        ventanaPrincipal.setSize(930, 500); //Definimos el tamaño de la ventana principal
         ventanaPrincipal.setLocationRelativeTo(null);  //Colocamos la ventana principal en medio de la pantalla
         ventanaPrincipal.setResizable(false); //Restringimos que la ventana principal pueda modificar su tamaño
         ventanaPrincipal.add(panel);        //Agregamos el panel a la ventana 

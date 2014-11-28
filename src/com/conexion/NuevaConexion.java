@@ -1,6 +1,7 @@
 package com.conexion;
 
 import java.awt.GridLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,7 +44,7 @@ public class NuevaConexion extends JFrame {
 
     public NuevaConexion() {
         this.setTitle("Nueva Conexion");
-        this.setSize(610, 200);
+        this.setSize(550, 200);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -57,6 +58,7 @@ public class NuevaConexion extends JFrame {
      */
     private void addComponentes() {
         panel.setLayout(new GridLayout(5, 2));
+        panel.setBorder(BorderFactory.createLineBorder(this.getBackground(), 10));
         JPanel pSur = new JPanel();
 
         panel.add(lNombreConexion);

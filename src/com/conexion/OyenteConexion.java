@@ -76,7 +76,6 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
 
                     // Agregar columnas...
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
-                    
                     System.out.println("AgregarColumna");
                     String database = JOptionPane.showInputDialog("Base de datos que se usara");
                     String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
@@ -105,8 +104,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     try {
                         nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la nueva base de datos",
                                 "Nueva base de datos", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (NullPointerException npe) {
-                    }
+                    } catch (NullPointerException npe) {}
 
                     try {
                         if (!nombrebd.equals("")) {
@@ -128,72 +126,93 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     System.out.println("Borrar bd");
                     try {
                         String nombrebd = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la base de datos a borrar", "");
+                        if(!nombrebd.equals("")){
+                            con.getStament().executeUpdate("DROP DATABASE " + nombrebd);
 
-                        con.getStament().executeUpdate("DROP DATABASE " + nombrebd);
+                            JOptionPane.showMessageDialog(consultas, "Base de datos borrada correctamente");
 
-                        JOptionPane.showMessageDialog(consultas, "Base de datos borrada correctamente");
-
-                        hayCambios = true;
-
-                    } catch (SQLException | NullPointerException e) {
+                            hayCambios = true;
+                        }
+                    } catch(SQLException e) {
                         JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    
+                    } catch(NullPointerException e){}
 
+                    // Borrar tablas
                 } else if (ae.getSource() == consultas.getBorrarTabla()) {
                     System.out.println("Borrar tabla");
 
                     try {
                         String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la tabla a borrar?", "");
-                        String nombretab = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la tabla a borrar", "");
+                        if(!nombrebd.equals("")){
+                            String nombretab = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la tabla a borrar", "");
+                            if(!nombretab.equals("")){
+                            con.getStament().executeUpdate("USE " + nombrebd);
+                            con.getStament().executeUpdate("DROP TABLE " + nombretab);
 
-                        con.getStament().executeUpdate("USE " + nombrebd);
-                        con.getStament().executeUpdate("DROP TABLE " + nombretab);
+                            JOptionPane.showMessageDialog(consultas, "Tabla borrada correctamente");
 
-                        JOptionPane.showMessageDialog(consultas, "Tabla borrada correctamente");
-
-                        hayCambios = true;
-
-                    } catch (SQLException | NullPointerException e) {
+                            hayCambios = true;
+                            }
+                        }
+                    } catch(SQLException  e) {
                         JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    
+                    } catch(NullPointerException e){}
 
+                    // Borrar filas
                 } else if (ae.getSource() == consultas.getBorrarFila()) {
                     System.out.println("Borrar fila");
 
                     try {
                         String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la fila?", "");
-                        String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la fila?", "");
-                        String nombrepk = JOptionPane.showInputDialog(consultas, "Ingresa la PK de la tabla", "Ejemplo: idLibro");
-                        String nombrefil = JOptionPane.showInputDialog(consultas, "Ingresa el valor de la PK de la fila a borrar", "");
+                        
+                        if(!nombrebd.equals("")){
+                            String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la fila?", "");
+                            if(!nombretab.equals("")){
+                                String nombrepk = JOptionPane.showInputDialog(consultas, "Ingresa la PK de la tabla", "Ejemplo: idLibro");
+                                if(!nombrepk.equals("")){
+                                    String nombrefil = JOptionPane.showInputDialog(consultas, "Ingresa el valor de la PK de la fila a borrar", "");
+                                    if(!nombrefil.equals("")){
+                                        con.getStament().executeUpdate("USE " + nombrebd);
+                                        con.getStament().executeUpdate("DELETE FROM " + nombretab + " WHERE " + nombrepk + " = " + nombrefil);
 
-                        con.getStament().executeUpdate("USE " + nombrebd);
-                        con.getStament().executeUpdate("DELETE FROM " + nombretab + " WHERE " + nombrepk + " = " + nombrefil);
+                                        JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
 
-                        JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
-
-                        hayCambios = true;
-
-                    } catch (SQLException | NullPointerException e) {
+                                        hayCambios = true;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (SQLException e) {
                         JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    } catch(NullPointerException npe){}
+                    
+                    // Borrar columnas
                 } else if (ae.getSource() == consultas.getBorrarColumna()) {
+                    
                     System.out.println("Borrar columna");
 
                     try {
                         String nombrebd = JOptionPane.showInputDialog(consultas, "¿En qué base de datos se encuentra la columna?", "");
-                        String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la columna a borrar?", "");
-                        String nombrecol = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la columna a borrar");
+                        if(!nombrebd.equals("")){
+                            String nombretab = JOptionPane.showInputDialog(consultas, "¿En qué tabla se encuentra la columna a borrar?", "");
+                            if(!nombretab.equals("")){
+                                String nombrecol = JOptionPane.showInputDialog(consultas, "Ingresa el nombre de la columna a borrar");
+                                if(!nombrecol.equals("")){
+                                    con.getStament().executeUpdate("USE " + nombrebd);
+                                    con.getStament().executeUpdate("ALTER TABLE " + nombretab + " DROP " + nombrecol);
+                            
+                                    JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
 
-                        con.getStament().executeUpdate("USE " + nombrebd);
-                        con.getStament().executeUpdate("ALTER TABLE " + nombretab + " DROP " + nombrecol);
-
-                        JOptionPane.showMessageDialog(consultas, "Columna borrada correctamente");
-
-                        hayCambios = true;
-
-                    } catch (SQLException | NullPointerException e) {
+                                    hayCambios = true;
+                                }
+                            }
+                        }
+                    } catch(SQLException  e) {
                         JOptionPane.showMessageDialog(consultas, e.getMessage(), "Ocurrió un error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    
+                    } catch(NullPointerException e){}
 
                 }
                 break;

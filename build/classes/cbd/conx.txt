@@ -28,13 +28,3 @@ Mac OS X Local
 3306
 local
 local
-Luis
-127.0.0.1
-3306
-root
-Itver94
-c
-127.0.0.1
-3306
-root
-root

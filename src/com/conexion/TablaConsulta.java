@@ -41,11 +41,8 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
         //de tipo 0 es actualizacion y 1 es consulta 
 
         super("Consulta");
-        this.setSize(640, 480);
-        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout());
-      
         // Tipo 0 = Actualización
         // Tipo 1 = Selección
 
@@ -85,6 +82,8 @@ public class TablaConsulta extends JFrame { //tablaConsulta es una ventana
                 }
                 
                 this.addKeyListener(oyenteC);
+                this.setSize(650, 230);
+                this.setLocationRelativeTo(null);
                 this.setVisible(true);
                 oyenteC.getArrayConsultas().add(this);
 

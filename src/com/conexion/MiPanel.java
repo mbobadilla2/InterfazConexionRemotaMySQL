@@ -32,7 +32,7 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
 //    private final Color color2 = new Color(0, 191, 255);
     private final Color color1 = new Color(74, 140, 255);
     private final Color color2 = new Color(206, 206, 206);
-    
+    private final JButton info = new JButton("");
     private JLabel lNumeroConexiones;
 //---------------------------------------------------------------------------------------------------
 
@@ -45,7 +45,6 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
     public MiPanel(MiOyente oyente) {
         this.oyente = oyente;
         agregarComponentes();
-
     }
 
     /**
@@ -68,6 +67,8 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         conexiones = new ArrayList<>(); //arrayList de tipo  panelenesConexion 
         //-----------------------------------------------------------------------------------------------------------------
 
+        info.setIcon(new ImageIcon("src/icon/info.png"));
+        
         //nombre de las etiqetas acomodados 
         etiquetasPaneles.add("Nombre conexión: ");
         etiquetasPaneles.add("Host: ");
@@ -136,7 +137,14 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
         //--------------------------------------------------------------------------------------------
 
         lNumeroConexiones.setText("Total de conexiones: " + numeroConexiones); //le ponemos a la etiqueta el numero de conexiones que hay
-        pSur.add(lNumeroConexiones);  //agregamos la etiqueta con el numero de conexiones al panel que va a estar en la parte sur del panel principal del frame
+        JPanel subsSur = new JPanel();
+        subsSur.add(lNumeroConexiones);
+        pSur.setLayout(new BorderLayout());
+        pSur.setBorder(BorderFactory.createLineBorder(this.getBackground(), 15));
+        JPanel subSur = new JPanel();
+        subSur.add(info);
+        pSur.add(subsSur, "Center");  //agregamos la etiqueta con el numero de conexiones al panel que va a estar en la parte sur del panel principal del frame
+        pSur.add(subSur, "East");
         this.add(pSur, "South");      //panel sur al sur del panel principal
         this.add(pNorte, "North");    //panel norte al norte del panel pricipal
         this.add(scroll, "Center");   //scroll en el centro de este panel
@@ -251,14 +259,14 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
     */
     public void addEventos() {
         bAgregarConexion.addActionListener(this.oyente);
-       
+        info.addActionListener(this.oyente);
     }
     
      private void agregartips() {
         bAgregarConexion.setToolTipText("Haz clic aqui para agregar una nueva conexión a la lista de conexiones");
         bAgregarConexion.setCursor(new Cursor(Cursor.HAND_CURSOR));
          for (PanelConexion conexione : conexiones) {
-             conexione.setToolTipText("Conexion #" +conexione.getName());
+             conexione.setToolTipText("Conexion # " + (Integer.parseInt(conexione.getName())+1));
              conexione.setCursor(new Cursor(Cursor.HAND_CURSOR));
          }
     }
@@ -283,6 +291,10 @@ public class MiPanel extends JPanel { //Clase mi panel es un JPanel
 
     public JScrollPane getScroll() {
         return scroll;
+    }
+
+    public JButton getInfo() {
+        return info;
     }
 
 }
