@@ -3,7 +3,11 @@ package com.conexion;
 import javax.swing.*;
 
 /**
- * @author Fernando2
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
  * Created on Oct 28, 2014, 6:25:33 PM
  */
 

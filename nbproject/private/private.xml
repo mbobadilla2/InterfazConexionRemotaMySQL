@@ -2,19 +2,24 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/TablaConsulta.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/MiOyente.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/Consulta.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/OyenteConexion.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/NuevaConexion.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/MiPanel.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/ConexionSQL.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/Main.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/PanelConexion.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/MenuEmergente.java</file>
-            <file>file:/Users/Fernando2/GitHub/PinaTeam1.2/src/com/conexion/Login.java</file>
-        </group>
         <group name="Practicas"/>
+        <group>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/AtributosCrearTabla.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/Main.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/MiPanel.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/NuevaConexion.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/OyenteConexion.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/Atributos.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/PanelConexion.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/Archivo.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/ConexionSQL.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/Login.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/MiOyente.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/InsertarFila.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/CrearTabla.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/MenuEmergente.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/Consulta.java</file>
+            <file>file:/C:/Users/Fernando2/Documents/GitHub/PinaTeam1.2/src/com/conexion/TablaConsulta.java</file>
+        </group>
     </open-files>
 </project-private>

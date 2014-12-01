@@ -12,7 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * @author Luis
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
  * Created on 25/11/2014, 08:44:51 PM
  * Ventana que hará actualizaciones de diferente tipo
  */

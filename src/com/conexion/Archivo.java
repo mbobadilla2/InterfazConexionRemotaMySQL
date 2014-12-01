@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
  *
  * @author Miguel Fernando Bobadilla Contreras
  * @author Luis Angel Pérez Muñoz
- * @author José Rubén Perez García
+ * @author José Rubén Perez Rodríguez
  * @author José Ramón Márquez Solano
  * @author Valery Abigail Cambara Gil
  * @version 6/Noviembre/2014 /A
@@ -20,7 +20,7 @@ public class Archivo { //clase archivo
     static String rutaGuardada="";
     
     /**
-     * Metodo que lee linea por liena un archivo y devuelve cada liena en un elemento nuevo
+     * Metodo que lee linea por liena un archivo y devuelve cada linea en un elemento nuevo
      * de un arraylist de string 
      * @param ruta ruta de donde se lee la informacion 
      * @return lista arrayList de strings que guarda cada linea del archivo pasado como ruta 

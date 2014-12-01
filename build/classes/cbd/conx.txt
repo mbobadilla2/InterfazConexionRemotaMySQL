@@ -1,30 +1,25 @@
-prueba loca 2
-168.192.0.1
-3306
-Luis Loco 2
-567898fv
-Fernando2
-localhost
+prueba
+127.0.0.1
 3306
 root
-root
-FundBD
+1234
+hola
+127.0.0.1
+3306
+prueba1
+1234
+prueba2
+169.254.78.175
+3306
+ezequiel
+1234
+ConexionLocal
 127.0.0.1
 3306
 root
 root
-conexion
+OtraConexionLocal
 127.0.0.1
 3306
 root
 root
-NuevaConexion
-127.0.0.1
-3306
-local
-local
-Mac OS X Local
-127.0.0.1
-3306
-local
-local

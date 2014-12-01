@@ -12,7 +12,7 @@ import javax.swing.*;
  *
  * @author Miguel Fernando Bobadilla Contreras
  * @author Luis Angel Pérez Muñoz
- * @author José Rubén Perez García
+ * @author José Rubén Perez Rodriguez
  * @author José Ramón Márquez Solano
  * @author Valery Abigail Cambara Gil
  * @version 6/Noviembre/2014 /A

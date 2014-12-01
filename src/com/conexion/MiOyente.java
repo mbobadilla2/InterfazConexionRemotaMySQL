@@ -11,8 +11,11 @@ import java.util.*;
 import javax.swing.*;
 
 /**
- *
- * @author Jose Ruben,Miguel Fernando,Jose Ramon,Luis Angel
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
  */
 public class MiOyente extends MouseAdapter implements ActionListener {
 
@@ -69,7 +72,7 @@ public class MiOyente extends MouseAdapter implements ActionListener {
                             "\n\nº José Ramón Márquez Solano" +
                             "\n\nº José Rubén Pérez Rodríguez" +
                             "\n\nº Valery Abigail Cambara Gil" +
-                            "\n\nv.1.0.",
+                            "\n\nv.1.0.1",
                             "Proyecto fundamentos de base de datos", JOptionPane.INFORMATION_MESSAGE);
                 }
         }

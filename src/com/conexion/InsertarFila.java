@@ -17,7 +17,11 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author JR
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
  */
 public class InsertarFila extends JFrame{
     private JButton agregar;

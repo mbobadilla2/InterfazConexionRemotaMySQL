@@ -28,9 +28,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 
-/**
- *
- * @author Jose Ruben
+/** 
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
  */
 public class OyenteConexion extends KeyAdapter implements ActionListener, WindowListener {
 
@@ -77,21 +80,36 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     // Agregar columnas...
                 } else if (ae.getSource() == consultas.getAgregarColumna()) {
                     System.out.println("AgregarColumna");
-                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
-                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
-                    String columna = JOptionPane.showInputDialog("Columna nueva: ");
-                    String tipo = JOptionPane.showInputDialog("Tipo de dato: ");
-                    InsertarColumna c = new InsertarColumna(database, tabla, columna, tipo, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
-                    
+                    try{
+                        String database = JOptionPane.showInputDialog("Base de datos que se usara");
+                        if(!database.equals("")){
+                            String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
+                            if(!tabla.equals("")){
+                                    String columna = JOptionPane.showInputDialog("Columna nueva: ");
+                                    if(!columna.equals("")){
+                                    String tipo = JOptionPane.showInputDialog("Tipo de dato: ");
+                                    if(!tipo.equals("")){
+                                    InsertarColumna c = new InsertarColumna(database, tabla, columna, tipo, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                                    }
+                                }
+                            }
+                        }
+                    }catch(NullPointerException npe){}
 
                     // Agregar filas...
                 } else if (ae.getSource() == consultas.getAgregarFila()) {
                     System.out.println("agregarfila");
-  
-                    String database = JOptionPane.showInputDialog("Base de datos que se usara");
-                    String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
-                    InsertarFila i = new InsertarFila(database, tabla, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
-
+                    try{
+                        String database = JOptionPane.showInputDialog("Base de datos que se usara");
+                        if(!database.equals("")){
+                            String tabla = JOptionPane.showInputDialog("Tabla a la que se agregara");
+                            if(!tabla.equals("")){
+                               InsertarFila i = new InsertarFila(database, tabla, p.getInfoConexion().get(3).getText(), p.getInfoConexion().get(2).getText(), p.getInfoConexion().get(1).getText(), p.getInfoConexion().get(4).getText());
+                            }
+                        }
+                    }catch(NullPointerException npe){}
+                    
+                        
                     // Agregar tablas...
                 } else if (ae.getSource() == consultas.getAgregarTabla()) {
                     m = new CrearTabla(con.getNombresBD(), con.getNombresTablas(), this);
@@ -308,7 +326,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
                     p.add(p.getInfoConexion().get(2));
                     p.add(new JLabel("Usuario: "));
                     p.add(p.getInfoConexion().get(3));
-                    p.add(new JLabel("Contraseña: "));
+//                    p.add(new JLabel("Contraseña: "));
                     //p.add(p.getDatosConx().get(4));
 
                     p.addEventos(oyente);
@@ -515,6 +533,7 @@ public class OyenteConexion extends KeyAdapter implements ActionListener, Window
         }
     }
 
+    // Función no implementada, ya que se vuelve muy inestable...
     public void recargarArbol() {
         JTree arbolito = consultas.crearArbol();
         consultas.setArbol(arbolito);

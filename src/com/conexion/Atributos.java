@@ -10,7 +10,12 @@ import javax.swing.*;
 import javax.swing.JTextField;
 
 /**
- * @author Luis Created on 25/11/2014, 10:02:44 PM
+ * @author Miguel Fernando Bobadilla Contreras
+ * @author Luis Angel Pérez Muñoz
+ * @author José Rubén Perez Rodriguez
+ * @author José Ramón Márquez Solano
+ * @author Valery Abigail Cambara Gil
+ *Created on 25/11/2014, 10:02:44 PM
  */
 public class Atributos extends JFrame {
     private OyenteConexion o;
